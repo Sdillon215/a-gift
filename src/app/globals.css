@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* Custom radial gradient utility for gem effects */
+.bg-gradient-radial {
+  background: radial-gradient(circle, var(--tw-gradient-stops));
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
