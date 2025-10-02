@@ -2,12 +2,13 @@ import { PrismaAdapter } from "@auth/prisma-adapter"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { PrismaClient } from "@prisma/client"
 import bcrypt from "bcryptjs"
+import type { NextAuthOptions } from "next-auth"
+import type { JWT } from "next-auth/jwt"
+import type { Session, User } from "next-auth"
 
 const prisma = new PrismaClient()
 
-
-
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
@@ -22,50 +23,41 @@ export const authOptions = {
         }
 
         const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email
-          }
+          where: { email: credentials.email }
         })
 
-        if (!user) {
-          return null
-        }
+        if (!user) return null
 
-        // For this example, we'll assume passwords are stored as plain text
-        // In production, you should hash passwords with bcrypt
-        const isPasswordValid = await bcrypt.compare(credentials.password, user.password || "")
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password,
+          user.password ?? ""
+        )
 
-        if (!isPasswordValid) {
-          return null
-        }
+        if (!isPasswordValid) return null
 
         return {
           id: user.id,
           email: user.email,
           name: user.name,
-          isAdmin: user.email === "sdillon215@gmail.com", // Check if user is admin
+          isAdmin: user.email === "sdillon215@gmail.com"
         }
       }
     })
   ],
-  session: {
-    strategy: "jwt" as const
-  },
-  pages: {
-    signIn: "/",
-  },
+  session: { strategy: "jwt" },
+  pages: { signIn: "/" },
   callbacks: {
-    async jwt({ token, user }: any) {
+    async jwt({ token, user }): Promise<JWT> {
       if (user) {
-        token.id = user.id
+        token.id = (user as User).id
         token.isAdmin = (user as any).isAdmin
       }
       return token
     },
-    async session({ session, token }: any) {
+    async session({ session, token }): Promise<Session> {
       if (token && session.user) {
-        (session.user as any).id = token.id
-        (session.user as any).isAdmin = token.isAdmin
+        session.user.id = token.id as string
+        session.user.isAdmin = token.isAdmin as boolean
       }
       return session
     }
