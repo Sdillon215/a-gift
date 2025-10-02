@@ -5,18 +5,6 @@ import bcrypt from "bcryptjs"
 
 const prisma = new PrismaClient()
 
-// Define types for callback parameters
-type JWTCallbackParams = {
-  token: Record<string, unknown>
-  user?: Record<string, unknown>
-}
-
-type SessionCallbackParams = {
-  session: {
-    user?: Record<string, unknown>
-  }
-  token: Record<string, unknown>
-}
 
 
 export const authOptions = {
@@ -67,17 +55,17 @@ export const authOptions = {
     signIn: "/",
   },
   callbacks: {
-    async jwt({ token, user }: JWTCallbackParams) {
+    async jwt({ token, user }: any) {
       if (user) {
-        token.id = user.id as string
-        token.isAdmin = (user as { isAdmin?: boolean }).isAdmin
+        token.id = user.id
+        token.isAdmin = (user as any).isAdmin
       }
       return token
     },
-    async session({ session, token }: SessionCallbackParams) {
+    async session({ session, token }: any) {
       if (token && session.user) {
-        (session.user as { id?: string; isAdmin?: boolean }).id = token.id as string
-        (session.user as { id?: string; isAdmin?: boolean }).isAdmin = token.isAdmin as boolean
+        (session.user as any).id = token.id
+        (session.user as any).isAdmin = token.isAdmin
       }
       return session
     }
