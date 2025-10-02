@@ -1,4 +1,3 @@
-import { NextAuthOptions } from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { PrismaClient } from "@prisma/client"
@@ -6,7 +5,7 @@ import bcrypt from "bcryptjs"
 
 const prisma = new PrismaClient()
 
-export const authOptions: NextAuthOptions = {
+export const authOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
@@ -43,7 +42,7 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           isAdmin: user.email === "sdillon215@gmail.com", // Check if user is admin
-        }
+        } as any
       }
     })
   ],
@@ -54,14 +53,14 @@ export const authOptions: NextAuthOptions = {
     signIn: "/",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: any) {
       if (user) {
         token.id = user.id
         token.isAdmin = (user as any).isAdmin
       }
       return token
     },
-    async session({ session, token }) {
+    async session({ session, token }: any) {
       if (token && session.user) {
         session.user.id = token.id as string
         session.user.isAdmin = token.isAdmin as boolean
