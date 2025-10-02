@@ -42,6 +42,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email,
           name: user.name,
+          isAdmin: user.email === "sdillon215@gmail.com", // Check if user is admin
         }
       }
     })
@@ -51,18 +52,19 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: "/",
-    signUp: "/",
   },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
+        token.isAdmin = (user as any).isAdmin
       }
       return token
     },
     async session({ session, token }) {
-      if (token) {
+      if (token && session.user) {
         session.user.id = token.id as string
+        session.user.isAdmin = token.isAdmin as boolean
       }
       return session
     }

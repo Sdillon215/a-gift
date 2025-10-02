@@ -63,8 +63,14 @@ export default function Home() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    console.log("Form submitted, isLogin:", isLogin, "formData:", formData);
+    
+    if (!validateForm()) {
+      console.log("Form validation failed");
+      return;
+    }
 
+    console.log("Form validation passed, starting authentication process");
     setIsLoading(true);
 
     try {
@@ -82,12 +88,20 @@ export default function Home() {
         if (result?.error) {
           setErrors({ general: "Invalid credentials" });
         } else if (result?.ok) {
-          console.log("Login successful, redirecting to home");
-          // Force a page reload to ensure session is updated
-          window.location.href = "/home";
+          console.log("Login successful, checking user role...");
+          // Check if user is admin and route accordingly
+          if (formData.email === "sdillon215@gmail.com") {
+            console.log("Admin user detected, redirecting to home");
+            window.location.href = "/home";
+          } else {
+            console.log("Regular user detected, redirecting to send-a-gift");
+            window.location.href = "/send-a-gift";
+          }
         }
       } else {
         // Handle signup
+        console.log("Starting signup process for:", formData.email);
+        
         const response = await fetch("/api/auth/register", {
           method: "POST",
           headers: {
@@ -100,7 +114,11 @@ export default function Home() {
           }),
         });
 
+        console.log("Registration response status:", response.status);
+
         if (response.ok) {
+          console.log("Registration successful, attempting auto-login");
+          
           // Auto sign in after successful registration
           const result = await signIn("credentials", {
             email: formData.email,
@@ -109,14 +127,18 @@ export default function Home() {
             redirect: false,
           });
 
+          console.log("Auto-login result:", result);
+
           if (result?.error) {
             setErrors({ general: "Registration successful, but login failed" });
           } else if (result?.ok) {
-            // Force a page reload to ensure session is updated
-            window.location.href = "/home";
+            console.log("Auto-login successful, redirecting to send-a-gift for new user");
+            // New users always go to send-a-gift page
+            window.location.href = "/send-a-gift";
           }
         } else {
           const error = await response.json();
+          console.log("Registration failed:", error);
           setErrors({ general: error.message || "Registration failed" });
         }
       }
@@ -128,6 +150,7 @@ export default function Home() {
   };
 
   const toggleMode = () => {
+    console.log("Toggling mode from", isLogin ? "login" : "signup", "to", !isLogin ? "login" : "signup");
     setIsLogin(!isLogin);
     setFormData({
       email: "",
@@ -154,6 +177,10 @@ export default function Home() {
           <p className="text-gray-600">
             {isLogin ? "Sign in to your account" : "Sign up for a new account"}
           </p>
+          {/* Debug info - remove in production */}
+          <div className="mt-2 text-xs text-gray-500">
+            Mode: {isLogin ? "Login" : "Signup"} | Loading: {isLoading ? "Yes" : "No"}
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -174,7 +201,7 @@ export default function Home() {
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900 ${
                   errors.name ? "border-red-500" : "border-gray-300"
                 }`}
                 placeholder="Enter your full name"
@@ -195,7 +222,7 @@ export default function Home() {
               name="email"
               value={formData.email}
               onChange={handleInputChange}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900 ${
                 errors.email ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="Enter your email"
@@ -215,7 +242,7 @@ export default function Home() {
               name="password"
               value={formData.password}
               onChange={handleInputChange}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900 ${
                 errors.password ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="Enter your password"
@@ -236,7 +263,7 @@ export default function Home() {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900 ${
                   errors.confirmPassword ? "border-red-500" : "border-gray-300"
                 }`}
                 placeholder="Confirm your password"
@@ -261,7 +288,7 @@ export default function Home() {
             {isLogin ? "Don't have an account?" : "Already have an account?"}
             <button
               onClick={toggleMode}
-              className="ml-2 text-blue-600 hover:text-blue-700 font-medium"
+              className="ml-2 text-blue-600 hover:text-blue-700 font-medium cursor-pointer"
             >
               {isLogin ? "Sign up" : "Sign in"}
             </button>
