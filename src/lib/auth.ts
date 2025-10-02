@@ -5,29 +5,6 @@ import bcrypt from "bcryptjs"
 
 const prisma = new PrismaClient()
 
-interface JWTParams {
-  token: {
-    id?: string
-    isAdmin?: boolean
-  }
-  user?: {
-    id: string
-    isAdmin?: boolean
-  }
-}
-
-interface SessionParams {
-  session: {
-    user?: {
-      id?: string
-      isAdmin?: boolean
-    }
-  }
-  token: {
-    id?: string
-    isAdmin?: boolean
-  }
-}
 
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
@@ -71,23 +48,23 @@ export const authOptions = {
     })
   ],
   session: {
-    strategy: "jwt"
+    strategy: "jwt" as const
   },
   pages: {
     signIn: "/",
   },
   callbacks: {
-    async jwt({ token, user }: JWTParams) {
+    async jwt({ token, user }: any) {
       if (user) {
         token.id = user.id
-        token.isAdmin = user.isAdmin
+        token.isAdmin = (user as any).isAdmin
       }
       return token
     },
-    async session({ session, token }: SessionParams) {
+    async session({ session, token }: any) {
       if (token && session.user) {
-        session.user.id = token.id as string
-        session.user.isAdmin = token.isAdmin as boolean
+        (session.user as any).id = token.id as string
+        (session.user as any).isAdmin = token.isAdmin as boolean
       }
       return session
     }
