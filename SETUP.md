@@ -58,6 +58,8 @@ BLOB_READ_WRITE_TOKEN="your-vercel-blob-token-here"
 - ✅ Form validation
 - ✅ Loading states
 - ✅ Admin user seeding
+- ✅ Vercel Blob image storage
+- ✅ Base64 blur data URLs for image optimization
 
 ## Admin User
 

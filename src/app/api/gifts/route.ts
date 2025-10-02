@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { put } from "@vercel/blob";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { generateBlurDataURL } from "@/lib/image-utils";
 
 const prisma = new PrismaClient();
 
@@ -43,12 +44,16 @@ export async function POST(request: NextRequest) {
       access: "public",
     });
 
+    // Generate blur data URL for the image
+    const blurDataUrl = await generateBlurDataURL(blob.url);
+
     // Save gift to database
     const gift = await prisma.gift.create({
       data: {
         title,
         message,
         imageUrl: blob.url,
+        blurDataUrl,
         userId: session.user.id,
       },
     });
@@ -61,6 +66,7 @@ export async function POST(request: NextRequest) {
           title: gift.title,
           message: gift.message,
           imageUrl: gift.imageUrl,
+          blurDataUrl: gift.blurDataUrl,
           createdAt: gift.createdAt,
         }
       },
