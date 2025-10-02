@@ -50,7 +50,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }): Promise<JWT> {
       if (user) {
         token.id = (user as User).id
-        token.isAdmin = (user as any).isAdmin
+        token.isAdmin = (user as User).isAdmin
       }
       return token
     },
