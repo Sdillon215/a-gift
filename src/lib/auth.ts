@@ -5,6 +5,30 @@ import bcrypt from "bcryptjs"
 
 const prisma = new PrismaClient()
 
+interface JWTParams {
+  token: {
+    id?: string
+    isAdmin?: boolean
+  }
+  user?: {
+    id: string
+    isAdmin?: boolean
+  }
+}
+
+interface SessionParams {
+  session: {
+    user?: {
+      id?: string
+      isAdmin?: boolean
+    }
+  }
+  token: {
+    id?: string
+    isAdmin?: boolean
+  }
+}
+
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -42,7 +66,7 @@ export const authOptions = {
           email: user.email,
           name: user.name,
           isAdmin: user.email === "sdillon215@gmail.com", // Check if user is admin
-        } as any
+        }
       }
     })
   ],
@@ -53,14 +77,14 @@ export const authOptions = {
     signIn: "/",
   },
   callbacks: {
-    async jwt({ token, user }: any) {
+    async jwt({ token, user }: JWTParams) {
       if (user) {
         token.id = user.id
-        token.isAdmin = (user as any).isAdmin
+        token.isAdmin = user.isAdmin
       }
       return token
     },
-    async session({ session, token }: any) {
+    async session({ session, token }: SessionParams) {
       if (token && session.user) {
         session.user.id = token.id as string
         session.user.isAdmin = token.isAdmin as boolean
