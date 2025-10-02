@@ -46,6 +46,7 @@ model User {
   password      String?
   accounts      Account[]
   sessions      Session[]
+  gifts         Gift[]
 }
 
 model VerificationToken {
@@ -54,4 +55,15 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Gift {
+  id          String   @id @default(cuid())
+  title       String
+  message     String
+  imageUrl    String
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

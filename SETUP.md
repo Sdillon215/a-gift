@@ -11,6 +11,9 @@ DATABASE_URL="postgresql://username:password@ep-xxx.us-east-1.aws.neon.tech/neon
 # NextAuth
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="your-secret-key-here"
+
+# Vercel Blob Storage
+BLOB_READ_WRITE_TOKEN="your-vercel-blob-token-here"
 ```
 
 ## Setup Steps
@@ -72,11 +75,14 @@ The Prisma schema includes:
 - `Account` model for OAuth providers
 - `Session` model for session management
 - `VerificationToken` model for email verification
+- `Gift` model for storing user gifts with image URLs
 
 ## API Routes
 
 - `POST /api/auth/register` - User registration
 - `GET/POST /api/auth/[...nextauth]` - NextAuth endpoints
+- `POST /api/gifts` - Create new gift with image upload
+- `GET /api/gifts` - Get user's gifts
 
 ## Pages
 

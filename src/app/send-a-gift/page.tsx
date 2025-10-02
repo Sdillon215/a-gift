@@ -93,25 +93,37 @@ export default function SendAGiftPage() {
     setIsLoading(true);
 
     try {
-      // TODO: Implement Vercel Blob storage and database saving
-      console.log("Gift data:", {
-        image: formData.image?.name,
-        title: formData.title,
-        message: formData.message,
-        characterCount: formData.message.length
+      // Create FormData for file upload
+      const submitData = new FormData();
+      submitData.append("title", formData.title);
+      submitData.append("message", formData.message);
+      if (formData.image) {
+        submitData.append("image", formData.image);
+      }
+
+      // Submit to API
+      const response = await fetch("/api/gifts", {
+        method: "POST",
+        body: submitData,
       });
-      
-      // Simulate processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      alert("Gift sent successfully! (This is a demo - storage not implemented yet)");
-      
-      // Reset form
-      setFormData({
-        image: null,
-        title: "",
-        message: "",
-      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Gift created successfully:", result);
+        
+        alert("Gift sent successfully!");
+        
+        // Reset form
+        setFormData({
+          image: null,
+          title: "",
+          message: "",
+        });
+      } else {
+        const error = await response.json();
+        console.error("Error creating gift:", error);
+        setErrors({ general: error.message || "Failed to send gift. Please try again." });
+      }
     } catch (error) {
       console.error("Error sending gift:", error);
       setErrors({ general: "Failed to send gift. Please try again." });
