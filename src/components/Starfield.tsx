@@ -42,15 +42,10 @@ interface StarfieldProps {
 
 // 3D Scene component - only renders when React Three Fiber is available
 function StarfieldScene({ scrollProgress }: StarfieldProps) {
-  if (!hasReactThreeFiber) {
-    return null;
-  }
-
-  // Dynamic imports for Three.js types
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const THREE = require('three');
-  
+  // Always call hooks at the top level, before any conditional returns
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const starsRef = useRef<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const nebulaRef = useRef<any>(null);
 
   // Generate random star positions
@@ -64,8 +59,12 @@ function StarfieldScene({ scrollProgress }: StarfieldProps) {
     return positions;
   }, []);
 
-  // Generate star colors
+  // Generate star colors - only if React Three Fiber is available
   const starColors = useMemo(() => {
+    if (!hasReactThreeFiber) return new Float32Array(0);
+    
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const THREE = require('three');
     const colors = new Float32Array(10000 * 3);
     for (let i = 0; i < 10000; i++) {
       const color = new THREE.Color();
@@ -83,9 +82,12 @@ function StarfieldScene({ scrollProgress }: StarfieldProps) {
       colors[i * 3 + 2] = color.b;
     }
     return colors;
-  }, []);
+  }, [hasReactThreeFiber]);
 
-  useFrame((state: any) => {
+  // Use frame hook - only if React Three Fiber is available
+  useFrame(() => {
+    if (!hasReactThreeFiber) return;
+    
     if (starsRef.current) {
       // Move stars based on scroll progress
       const zOffset = scrollProgress * 1000;
@@ -101,6 +103,15 @@ function StarfieldScene({ scrollProgress }: StarfieldProps) {
       nebulaRef.current.rotation.y += 0.0003;
     }
   });
+
+  // Early return after all hooks
+  if (!hasReactThreeFiber) {
+    return null;
+  }
+
+  // Dynamic imports for Three.js types
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const THREE = require('three');
 
   // Use any type for JSX elements to avoid TypeScript errors
   // eslint-disable-next-line @typescript-eslint/no-require-imports
