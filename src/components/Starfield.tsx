@@ -18,6 +18,7 @@ const hasReactThreeFiber = (() => {
 })();
 
 // Import React Three Fiber components only if available
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let Canvas: any, useFrame: any, Stars: any;
 if (hasReactThreeFiber) {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -28,8 +29,10 @@ if (hasReactThreeFiber) {
   useFrame = r3f.useFrame;
   Stars = drei.Stars;
 } else {
+  // eslint-disable-next-line react/display-name, @typescript-eslint/no-explicit-any
   Canvas = ({ children }: any) => <div>{children}</div>;
   useFrame = () => {};
+  // eslint-disable-next-line react/display-name
   Stars = () => null;
 }
 
