@@ -1,15 +1,24 @@
 "use client";
 
+import React from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 // Conditional import for framer-motion
-let motion: any;
+let motion: {
+  div: React.ComponentType<any>;
+  nav: React.ComponentType<any>;
+};
+
 try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   motion = require("framer-motion").motion;
 } catch {
   // Fallback if framer-motion is not installed
-  motion = { div: "div", nav: "nav" };
+  motion = { 
+    div: ({ children, ...props }: any) => <div {...props}>{children}</div>, 
+    nav: ({ children, ...props }: any) => <nav {...props}>{children}</nav> 
+  };
 }
 import GiftCard from "@/components/GiftCard";
 import Starfield from "@/components/Starfield";
