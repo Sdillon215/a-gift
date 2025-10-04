@@ -6,7 +6,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 // Conditional import for framer-motion
 let motion: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   div: React.ComponentType<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   nav: React.ComponentType<any>;
 };
 
@@ -16,7 +18,9 @@ try {
 } catch {
   // Fallback if framer-motion is not installed
   motion = { 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     div: ({ children, ...props }: any) => <div {...props}>{children}</div>, 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     nav: ({ children, ...props }: any) => <nav {...props}>{children}</nav> 
   };
 }
@@ -223,7 +227,7 @@ export default function HomePage() {
             >
               <h3 className="text-4xl font-bold text-white mb-6">Deeper Into Space</h3>
               <p className="text-emerald-100 text-xl">
-                You've traveled far into the cosmic gift universe
+                You&apos;ve traveled far into the cosmic gift universe
               </p>
             </motion.div>
           </div>

@@ -5,8 +5,11 @@ import { useRef, useMemo } from 'react';
 // Check if React Three Fiber packages are available
 const hasReactThreeFiber = (() => {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('@react-three/fiber');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('@react-three/drei');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('three');
     return true;
   } catch {
@@ -17,7 +20,9 @@ const hasReactThreeFiber = (() => {
 // Import React Three Fiber components only if available
 let Canvas: any, useFrame: any, Stars: any;
 if (hasReactThreeFiber) {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const r3f = require('@react-three/fiber');
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const drei = require('@react-three/drei');
   Canvas = r3f.Canvas;
   useFrame = r3f.useFrame;
@@ -39,6 +44,7 @@ function StarfieldScene({ scrollProgress }: StarfieldProps) {
   }
 
   // Dynamic imports for Three.js types
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const THREE = require('three');
   
   const starsRef = useRef<any>(null);
@@ -94,6 +100,7 @@ function StarfieldScene({ scrollProgress }: StarfieldProps) {
   });
 
   // Use any type for JSX elements to avoid TypeScript errors
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const JSX = require('react').createElement;
 
   return JSX('group', null,
