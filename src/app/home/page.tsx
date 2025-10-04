@@ -2,11 +2,44 @@
 
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import GiftCard from "@/components/GiftCard";
+
+interface Gift {
+  id: string;
+  title: string;
+  message: string;
+  imageUrl: string;
+  blurDataUrl?: string | null;
+  createdAt: string;
+  user: {
+    id: string;
+    name: string | null;
+    email: string;
+  };
+}
 
 export default function HomePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const [gifts, setGifts] = useState<Gift[]>([]);
+  const [giftsLoading, setGiftsLoading] = useState(true);
+
+  const fetchGifts = async () => {
+    try {
+      const response = await fetch("/api/gifts");
+      if (response.ok) {
+        const data = await response.json();
+        setGifts(data.gifts || []);
+      } else {
+        console.error("Failed to fetch gifts");
+      }
+    } catch (error) {
+      console.error("Error fetching gifts:", error);
+    } finally {
+      setGiftsLoading(false);
+    }
+  };
 
   useEffect(() => {
     console.log("Home page - Session status:", status);
@@ -15,6 +48,8 @@ export default function HomePage() {
     if (status === "unauthenticated") {
       console.log("Redirecting to login page");
       router.push("/");
+    } else if (status === "authenticated") {
+      fetchGifts();
     }
   }, [status, router, session]);
 
@@ -155,6 +190,30 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Gifts Section */}
+          <div className="mt-12 bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
+            <h3 className="text-2xl font-semibold text-white mb-6">All Gifts</h3>
+            <p className="text-white/70 mb-6">Discover gifts shared by our community</p>
+            {giftsLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                <span className="ml-3 text-white">Loading gifts...</span>
+              </div>
+            ) : gifts.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {gifts.map((gift) => (
+                  <GiftCard key={gift.id} gift={gift} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <div className="text-6xl mb-4">🎁</div>
+                <p className="text-white/70 text-lg">No gifts shared yet</p>
+                <p className="text-white/50 text-sm mt-2">Be the first to share a gift with the community!</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

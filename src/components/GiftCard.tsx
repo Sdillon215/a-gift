@@ -8,6 +8,11 @@ interface GiftCardProps {
     imageUrl: string;
     blurDataUrl?: string | null;
     createdAt: string;
+    user: {
+      id: string;
+      name: string | null;
+      email: string;
+    };
   };
 }
 
@@ -29,8 +34,21 @@ export default function GiftCard({ gift }: GiftCardProps) {
       <div className="space-y-3">
         <h3 className="text-xl font-semibold text-white">{gift.title}</h3>
         <p className="text-emerald-100 text-sm leading-relaxed">{gift.message}</p>
-        <div className="text-xs text-emerald-200">
-          {new Date(gift.createdAt).toLocaleDateString()}
+        
+        <div className="flex items-center justify-between pt-2 border-t border-white/10">
+          <div className="flex items-center space-x-2">
+            <div className="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
+              <span className="text-white text-xs font-bold">
+                {gift.user.name ? gift.user.name.charAt(0).toUpperCase() : gift.user.email.charAt(0).toUpperCase()}
+              </span>
+            </div>
+            <span className="text-emerald-200 text-sm">
+              {gift.user.name || gift.user.email}
+            </span>
+          </div>
+          <div className="text-xs text-emerald-200">
+            {new Date(gift.createdAt).toLocaleDateString()}
+          </div>
         </div>
       </div>
     </div>

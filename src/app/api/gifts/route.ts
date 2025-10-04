@@ -92,10 +92,16 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Get user's gifts
+    // Get all gifts with user information
     const gifts = await prisma.gift.findMany({
-      where: {
-        userId: session.user.id,
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",
