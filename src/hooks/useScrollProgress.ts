@@ -9,6 +9,13 @@ export function useScrollProgress() {
     const updateScrollProgress = () => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      
+      // Safety check to prevent NaN
+      if (docHeight <= 0) {
+        setScrollProgress(0);
+        return;
+      }
+      
       const progress = Math.min(scrollTop / docHeight, 1);
       setScrollProgress(progress);
     };

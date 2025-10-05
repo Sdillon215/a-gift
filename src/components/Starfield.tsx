@@ -48,13 +48,14 @@ function StarfieldScene({ scrollProgress }: StarfieldProps) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const nebulaRef = useRef<any>(null);
 
-  // Generate random star positions
+  // Generate random star positions - extended depth for continuous scrolling
   const starPositions = useMemo(() => {
-    const positions = new Float32Array(10000 * 3);
-    for (let i = 0; i < 10000; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 2000;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 2000;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 2000;
+    const positions = new Float32Array(20000 * 3);
+    for (let i = 0; i < 20000; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 3000;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 3000;
+      // Extend starfield much deeper (range from -1000 to 4000)
+      positions[i * 3 + 2] = Math.random() * 5000 - 1000;
     }
     return positions;
   }, []);
@@ -65,8 +66,8 @@ function StarfieldScene({ scrollProgress }: StarfieldProps) {
     
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const THREE = require('three');
-    const colors = new Float32Array(10000 * 3);
-    for (let i = 0; i < 10000; i++) {
+    const colors = new Float32Array(20000 * 3);
+    for (let i = 0; i < 20000; i++) {
       const color = new THREE.Color();
       // Mix of white, blue, and purple stars
       const rand = Math.random();
@@ -89,9 +90,15 @@ function StarfieldScene({ scrollProgress }: StarfieldProps) {
     if (!hasReactThreeFiber) return;
     
     if (starsRef.current) {
-      // Move stars based on scroll progress
-      const zOffset = scrollProgress * 1000;
+      // Move stars based on scroll progress - extended range for continuous stars
+      const safeScrollProgress = isNaN(scrollProgress) ? 0 : scrollProgress;
+      const zOffset = safeScrollProgress * 2000 - 500; // Start at -500, move to 1500
       starsRef.current.position.z = zOffset;
+      
+      // Debug: log first few frames
+      if (Math.random() < 0.01) {
+        console.log('Starfield frame:', { scrollProgress, safeScrollProgress, zOffset });
+      }
       
       // Slow rotation for dynamic effect
       starsRef.current.rotation.y += 0.0005;
@@ -121,37 +128,37 @@ function StarfieldScene({ scrollProgress }: StarfieldProps) {
     // Custom starfield
     JSX('points', { ref: starsRef },
       JSX('bufferGeometry', null,
-        JSX('bufferAttribute', {
-          attach: "attributes-position",
-          count: 10000,
-          array: starPositions,
-          itemSize: 3
-        }),
-        JSX('bufferAttribute', {
-          attach: "attributes-color",
-          count: 10000,
-          array: starColors,
-          itemSize: 3
-        })
+                JSX('bufferAttribute', {
+                  attach: "attributes-position",
+                  count: 20000,
+                  array: starPositions,
+                  itemSize: 3
+                }),
+                JSX('bufferAttribute', {
+                  attach: "attributes-color",
+                  count: 20000,
+                  array: starColors,
+                  itemSize: 3
+                })
       ),
-      JSX('pointsMaterial', {
-        size: 2,
-        vertexColors: true,
-        transparent: true,
-        opacity: 0.8,
-        sizeAttenuation: true
-      })
+              JSX('pointsMaterial', {
+                size: 3,
+                vertexColors: true,
+                transparent: true,
+                opacity: 1.0,
+                sizeAttenuation: true
+              })
     ),
 
-    // Additional stars from drei for depth
+    // Additional stars from drei for depth - extended range
     JSX(Stars, {
-      radius: 1000,
-      depth: 500,
-      count: 5000,
-      factor: 4,
+      radius: 1200,
+      depth: 2000,
+      count: 15000,
+      factor: 8,
       saturation: 0,
-      fade: true,
-      speed: 0.5
+      fade: false,
+      speed: 0.1
     }),
 
     // Nebula-like effect
@@ -182,22 +189,27 @@ function StarfieldScene({ scrollProgress }: StarfieldProps) {
 }
 
 export default function Starfield({ scrollProgress }: StarfieldProps) {
+  // Debug logging
+  console.log('Starfield rendering:', { hasReactThreeFiber, scrollProgress });
+  
   if (!hasReactThreeFiber) {
     // Fallback: CSS-based starfield animation
     return (
       <div className="fixed inset-0 z-0 bg-black overflow-hidden">
         {/* CSS-based starfield fallback */}
         <div className="absolute inset-0">
-          {Array.from({ length: 100 }).map((_, i) => (
+          {Array.from({ length: 200 }).map((_, i) => (
             <div
               key={i}
-              className="absolute w-1 h-1 bg-white rounded-full animate-pulse"
+              className="absolute bg-white rounded-full animate-pulse"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
+                width: `${Math.random() * 2 + 1}px`,
+                height: `${Math.random() * 2 + 1}px`,
                 animationDelay: `${Math.random() * 3}s`,
                 animationDuration: `${2 + Math.random() * 2}s`,
-                transform: `translateZ(${scrollProgress * 100}px)`,
+                opacity: Math.random() * 0.8 + 0.3,
               }}
             />
           ))}
@@ -211,7 +223,7 @@ export default function Starfield({ scrollProgress }: StarfieldProps) {
   return (
     <div className="fixed inset-0 z-0">
       <Canvas
-        camera={{ position: [0, 0, 0], fov: 75 }}
+        camera={{ position: [0, 0, 100], fov: 75 }}
         style={{ background: 'transparent' }}
       >
         <StarfieldScene scrollProgress={scrollProgress} />
