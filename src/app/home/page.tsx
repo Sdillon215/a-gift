@@ -152,34 +152,24 @@ export default function HomePage() {
             </p>
           </motion.div>
 
-          {/* Gifts Section */}
+          {/* Gifts Introduction */}
           <motion.div 
-            className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <h3 className="text-2xl font-semibold text-white mb-6">All Gifts</h3>
-            <p className="text-white/70 mb-6">Discover gifts shared by our community</p>
-            {giftsLoading ? (
+            <h3 className="text-4xl font-bold text-white mb-6">Discover Cosmic Gifts</h3>
+            <p className="text-xl text-emerald-100 max-w-2xl mx-auto mb-8">
+              Journey through the universe of gifts, where each star reveals a unique treasure
+            </p>
+            {giftsLoading && (
               <div className="flex items-center justify-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
                 <span className="ml-3 text-white">Loading gifts...</span>
               </div>
-            ) : gifts.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {gifts.map((gift, index) => (
-                  <motion.div
-                    key={gift.id}
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
-                  >
-                    <GiftCard gift={gift} />
-                  </motion.div>
-                ))}
-              </div>
-            ) : (
+            )}
+            {!giftsLoading && gifts.length === 0 && (
               <div className="text-center py-8">
                 <div className="text-6xl mb-4">🎁</div>
                 <p className="text-white/70 text-lg">No gifts shared yet</p>
@@ -188,12 +178,29 @@ export default function HomePage() {
             )}
           </motion.div>
 
-          {/* Additional content for scroll effect */}
+          {/* Individual Gift Cards Spaced Throughout */}
+          {!giftsLoading && gifts.length > 0 && gifts.map((gift, index) => (
+            <motion.div 
+              key={gift.id}
+              className="flex justify-center mb-32"
+              initial={{ opacity: 0, y: 100 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: index * 0.2 }}
+              viewport={{ once: true, margin: "-100px" }}
+            >
+              <div className="border-white/20 max-w-lg">
+                <GiftCard gift={gift} />
+              </div>
+            </motion.div>
+          ))}
+
+          {/* Continue Your Journey Section */}
           <motion.div 
-            className="mt-20 text-center"
+            className="mt-32 text-center"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.5 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+            viewport={{ once: true, margin: "-100px" }}
           >
             <h3 className="text-3xl font-bold text-white mb-6">Continue Your Journey</h3>
             <p className="text-emerald-100 text-lg mb-8">
@@ -217,13 +224,14 @@ export default function HomePage() {
             </div>
           </motion.div>
 
-          {/* More scrollable content */}
-          <div className="h-screen flex items-center justify-center">
+          {/* Deeper Into Space Section */}
+          <div className="h-screen flex items-center justify-center mt-32">
             <motion.div 
               className="text-center"
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1 }}
+              viewport={{ once: true, margin: "-100px" }}
             >
               <h3 className="text-4xl font-bold text-white mb-6">Deeper Into Space</h3>
               <p className="text-emerald-100 text-xl">
