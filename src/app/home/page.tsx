@@ -25,7 +25,6 @@ try {
   };
 }
 import GiftCard from "@/components/GiftCard";
-import Starfield from "@/components/Starfield";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
 
 interface Gift {
@@ -95,12 +94,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* 3D Starfield Background */}
-      <Starfield scrollProgress={scrollProgress} />
-      
-      {/* Overlay gradient for better text readability */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/30 via-transparent to-green-900/20 z-10"></div>
+    <div className="relative z-20">
       
       {/* Navigation */}
       <motion.nav 
