@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession, signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
 
@@ -32,6 +32,7 @@ interface Gift {
 export default function Navigation() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const pathname = usePathname();
   const [gifts, setGifts] = useState<Gift[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -91,7 +92,7 @@ export default function Navigation() {
   }, [isMobileMenuOpen]);
 
   // Don't show navigation on login/signup page or when not authenticated
-  if (status === "unauthenticated" || !session) {
+  if (status === "unauthenticated" || !session || pathname === "/") {
     return null;
   }
 

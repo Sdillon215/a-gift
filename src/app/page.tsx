@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { useState, useEffect } from "react";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [isLogin, setIsLogin] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -13,6 +16,13 @@ export default function Home() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
+
+  // Redirect to home if already logged in
+  useEffect(() => {
+    if (status === "authenticated" && session) {
+      router.push("/home");
+    }
+  }, [status, session, router]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
