@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -150,39 +150,9 @@ export default function SendAGiftPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-600 to-green-800 relative overflow-hidden">
-      {/* Glassy overlay effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-emerald-900/20"></div>
-      
-      {/* Gem-like highlights */}
-      <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-radial from-emerald-300/30 to-transparent rounded-full blur-xl"></div>
-      <div className="absolute bottom-1/3 right-1/4 w-24 h-24 bg-gradient-radial from-green-300/40 to-transparent rounded-full blur-lg"></div>
-      <div className="absolute top-1/2 right-1/3 w-16 h-16 bg-gradient-radial from-emerald-200/50 to-transparent rounded-full blur-md"></div>
-      
-      {/* Navigation */}
-      <nav className="relative z-10 p-6">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="text-white">
-            <h1 className="text-2xl font-bold">A-Gift</h1>
-            <p className="text-emerald-100">Send a Gift</p>
-          </div>
-          <div className="flex items-center space-x-4">
-            <div className="text-right text-white">
-              <p className="font-medium">{session.user?.name || "User"}</p>
-              <p className="text-sm text-emerald-100">{session.user?.email}</p>
-            </div>
-            <button
-              onClick={() => signOut({ callbackUrl: "/" })}
-              className="bg-white/20 backdrop-blur-md text-white px-4 py-2 rounded-lg hover:bg-white/30 transition-colors border border-white/20"
-            >
-              Sign Out
-            </button>
-          </div>
-        </div>
-      </nav>
-
+    <div className="min-h-screen relative z-20">
       {/* Main Content */}
-      <div className="relative z-10 px-6 pb-20">
+      <div className="relative z-20 px-6 pb-20 pt-6">
         <div className="max-w-2xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
