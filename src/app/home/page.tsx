@@ -3,7 +3,7 @@
 import React from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 // Conditional import for framer-motion
 let motion: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -46,6 +46,10 @@ export default function HomePage() {
   const router = useRouter();
   const [gifts, setGifts] = useState<Gift[]>([]);
   const [giftsLoading, setGiftsLoading] = useState(true);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
   const scrollProgress = useScrollProgress();
 
   const fetchGifts = async () => {
@@ -76,6 +80,38 @@ export default function HomePage() {
     }
   }, [status, router, session]);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    }
+
+    if (isDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [isDropdownOpen]);
+
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+        setIsMobileMenuOpen(false);
+      }
+    }
+
+    if (isMobileMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [isMobileMenuOpen]);
+
   if (status === "loading") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-emerald-600 to-green-800 flex items-center justify-center">
@@ -93,26 +129,79 @@ export default function HomePage() {
     return null;
   }
 
+  // Check if the current user has a gift
+  const userGift = gifts.find(gift => gift.user.id === session.user?.id);
+  const hasGift = !!userGift;
+
   return (
     <div className="relative z-20">
       
       {/* Navigation */}
       <motion.nav 
-        className="relative z-20 p-6"
+        className="relative p-4 md:p-6"
         style={{
           y: scrollProgress * -50, // Parallax effect for navbar
+          zIndex: 1000,
+          isolation: 'isolate'
         }}
       >
         <div className="max-w-7xl mx-auto flex justify-between items-center">
+          {/* Logo */}
           <div className="text-white">
-            <h1 className="text-2xl font-bold">A-Gift</h1>
-            <p className="text-emerald-100">Welcome back!</p>
+            <h1 className="text-xl md:text-2xl font-bold">A-Gift</h1>
+            <p className="text-sm text-emerald-100 hidden sm:block">Welcome back!</p>
           </div>
-          <div className="flex items-center space-x-4">
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-4">
             <div className="text-right text-white">
               <p className="font-medium">{session.user?.name || "User"}</p>
               <p className="text-sm text-emerald-100">{session.user?.email}</p>
             </div>
+            
+            {/* Dropdown Menu */}
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="bg-white/20 backdrop-blur-md text-white px-4 py-2 rounded-lg hover:bg-white/30 transition-colors border border-white/20 flex items-center space-x-2"
+              >
+                <span>Gift</span>
+                <svg 
+                  className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {isDropdownOpen && (
+                <div 
+                  className="absolute right-0 mt-2 w-48 rounded-lg shadow-2xl border border-gray-200 overflow-hidden" 
+                  style={{ 
+                    zIndex: 9999,
+                    backgroundColor: '#ffffff',
+                    isolation: 'isolate'
+                  }}
+                >
+                  <button
+                    onClick={() => {
+                      router.push('/send-a-gift');
+                      setIsDropdownOpen(false);
+                    }}
+                    className="w-full text-left px-4 py-3 text-gray-900 hover:bg-emerald-50 transition-colors flex items-center space-x-2"
+                    style={{ backgroundColor: '#ffffff' }}
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span className="font-medium">{hasGift ? 'Edit Gift' : 'Send a Gift'}</span>
+                  </button>
+                </div>
+              )}
+            </div>
+            
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
               className="bg-white/20 backdrop-blur-md text-white px-4 py-2 rounded-lg hover:bg-white/30 transition-colors border border-white/20"
@@ -120,12 +209,76 @@ export default function HomePage() {
               Sign Out
             </button>
           </div>
+
+          {/* Mobile Hamburger Menu */}
+          <div className="md:hidden" ref={mobileMenuRef}>
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="bg-white/20 backdrop-blur-md text-white p-2 rounded-lg hover:bg-white/30 transition-colors border border-white/20"
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+
+            {/* Mobile Menu Dropdown */}
+            {isMobileMenuOpen && (
+              <div 
+                className="absolute right-4 mt-2 w-64 rounded-lg shadow-2xl border border-gray-200 overflow-hidden" 
+                style={{ 
+                  zIndex: 9999,
+                  backgroundColor: '#ffffff',
+                  isolation: 'isolate'
+                }}
+              >
+                <div className="p-4 border-b border-gray-200" style={{ backgroundColor: '#f9fafb' }}>
+                  <p className="font-medium text-gray-900">{session.user?.name || "User"}</p>
+                  <p className="text-sm text-gray-700 truncate">{session.user?.email}</p>
+                </div>
+                
+                <button
+                  onClick={() => {
+                    router.push('/send-a-gift');
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="w-full text-left px-4 py-3 text-gray-900 hover:bg-emerald-50 transition-colors flex items-center space-x-2 border-b border-gray-200 font-medium"
+                  style={{ backgroundColor: '#ffffff' }}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  <span>{hasGift ? 'Edit Gift' : 'Send a Gift'}</span>
+                </button>
+                
+                <button
+                  onClick={() => {
+                    signOut({ callbackUrl: "/" });
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 transition-colors flex items-center space-x-2 font-medium"
+                  style={{ backgroundColor: '#ffffff' }}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  <span>Sign Out</span>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </motion.nav>
 
       {/* Main Content with Parallax Effects */}
       <motion.div 
-        className="relative z-20 px-6 pb-20"
+        className="relative z-20 px-4 md:px-6 pb-20"
         style={{
           y: scrollProgress * -100, // Stronger parallax for content
         }}
@@ -133,28 +286,28 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto">
           {/* Hero Section */}
           <motion.div 
-            className="text-center mb-16 pt-20"
+            className="text-center mb-12 md:mb-16 pt-12 md:pt-20"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
           >
-            <h2 className="text-5xl md:text-7xl font-bold text-white mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white mb-4 md:mb-6 px-4">
               Explore the Universe
             </h2>
-            <p className="text-xl text-emerald-100 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto px-4">
               Journey through the cosmos of gifts, where every star represents a unique treasure
             </p>
           </motion.div>
 
           {/* Gifts Introduction */}
           <motion.div 
-            className="text-center mb-16"
+            className="text-center mb-12 md:mb-16 px-4"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <h3 className="text-4xl font-bold text-white mb-6">Discover Cosmic Gifts</h3>
-            <p className="text-xl text-emerald-100 max-w-2xl mx-auto mb-8">
+            <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 md:mb-6">Discover Cosmic Gifts</h3>
+            <p className="text-base sm:text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto mb-6 md:mb-8">
               Journey through the universe of gifts, where each star reveals a unique treasure
             </p>
             {giftsLoading && (
@@ -176,13 +329,13 @@ export default function HomePage() {
           {!giftsLoading && gifts.length > 0 && gifts.map((gift, index) => (
             <motion.div 
               key={gift.id}
-              className="flex justify-center mb-32"
+              className="flex justify-center mb-20 md:mb-32 px-4"
               initial={{ opacity: 0, y: 100 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: index * 0.2 }}
               viewport={{ once: true, margin: "-100px" }}
             >
-              <div className="border-white/20 max-w-lg">
+              <div className="border-white/20 w-full max-w-lg">
                 <GiftCard gift={gift} />
               </div>
             </motion.div>
