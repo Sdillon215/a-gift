@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
 // GET - Fetch a specific gift
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Check if user is authenticated
@@ -22,7 +22,7 @@ export async function GET(
       );
     }
 
-    const giftId = params.id;
+    const { id: giftId } = await params;
 
     // Get the specific gift with user information
     const gift = await prisma.gift.findUnique({
@@ -68,7 +68,7 @@ export async function GET(
 // PUT - Update a specific gift
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Check if user is authenticated
@@ -80,7 +80,7 @@ export async function PUT(
       );
     }
 
-    const giftId = params.id;
+    const { id: giftId } = await params;
 
     // Check if the gift exists and belongs to the user
     const existingGift = await prisma.gift.findUnique({
@@ -178,7 +178,7 @@ export async function PUT(
 // DELETE - Delete a specific gift
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Check if user is authenticated
@@ -190,7 +190,7 @@ export async function DELETE(
       );
     }
 
-    const giftId = params.id;
+    const { id: giftId } = await params;
 
     // Check if the gift exists and belongs to the user
     const existingGift = await prisma.gift.findUnique({
