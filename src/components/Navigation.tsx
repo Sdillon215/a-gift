@@ -151,7 +151,11 @@ export default function Navigation() {
               >
                 <button
                   onClick={() => {
-                    router.push('/send-a-gift');
+                    if (hasGift && userGift) {
+                      router.push(`/edit-gift/${userGift.id}`);
+                    } else {
+                      router.push('/send-a-gift');
+                    }
                     setIsDropdownOpen(false);
                   }}
                   className="w-full text-left px-4 py-3 text-gray-900 hover:bg-emerald-50 transition-colors flex items-center space-x-2"
@@ -209,7 +213,11 @@ export default function Navigation() {
               
               <button
                 onClick={() => {
-                  router.push('/send-a-gift');
+                  if (hasGift && userGift) {
+                    router.push(`/edit-gift/${userGift.id}`);
+                  } else {
+                    router.push('/send-a-gift');
+                  }
                   setIsMobileMenuOpen(false);
                 }}
                 className="w-full text-left px-4 py-3 text-gray-900 hover:bg-emerald-50 transition-colors flex items-center space-x-2 border-b border-gray-200 font-medium"
