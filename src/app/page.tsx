@@ -209,7 +209,7 @@ export default function Home() {
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900 ${
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-colors text-gray-900 ${
                   errors.name ? "border-red-500" : "border-gray-300"
                 }`}
                 placeholder="Enter your full name"
@@ -230,7 +230,7 @@ export default function Home() {
               name="email"
               value={formData.email}
               onChange={handleInputChange}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900 ${
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-colors text-gray-900 ${
                 errors.email ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="Enter your email"
@@ -250,7 +250,7 @@ export default function Home() {
               name="password"
               value={formData.password}
               onChange={handleInputChange}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900 ${
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-colors text-gray-900 ${
                 errors.password ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="Enter your password"
@@ -271,7 +271,7 @@ export default function Home() {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900 ${
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-colors text-gray-900 ${
                   errors.confirmPassword ? "border-red-500" : "border-gray-300"
                 }`}
                 placeholder="Confirm your password"

@@ -373,7 +373,7 @@ export default function EditGiftPage() {
                   name="title"
                   value={formData.title}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors text-gray-900 ${
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent focus:outline-none transition-colors text-gray-900 ${
                     errors.title ? "border-red-500" : "border-gray-300"
                   }`}
                   placeholder="Enter a title for your gift"
@@ -395,7 +395,7 @@ export default function EditGiftPage() {
                   onChange={handleInputChange}
                   rows={4}
                   maxLength={500}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors text-gray-900 resize-none ${
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent focus:outline-none transition-colors text-gray-900 resize-none ${
                     errors.message ? "border-red-500" : "border-gray-300"
                   }`}
                   placeholder="Write your message (up to 500 characters)"
