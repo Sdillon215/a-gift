@@ -35,6 +35,7 @@ export default function EditGiftPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingGift, setIsLoadingGift] = useState(true);
   const [showImageUpload, setShowImageUpload] = useState(false);
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
   // Fetch the existing gift data
   useEffect(() => {
@@ -159,10 +160,13 @@ export default function EditGiftPage() {
       if (response.ok) {
         const result = await response.json();
         
-        alert("Gift updated successfully!");
+        setShowSuccessAlert(true);
         
-        // Redirect to home page
-        router.push("/home");
+        // Auto-hide alert and redirect after 2 seconds
+        setTimeout(() => {
+          setShowSuccessAlert(false);
+          router.push("/home");
+        }, 2000);
       } else {
         const error = await response.json();
         console.error("Error updating gift:", error);
@@ -215,6 +219,18 @@ export default function EditGiftPage() {
 
   return (
     <div className="min-h-screen relative z-20">
+      {/* Success Alert */}
+      {showSuccessAlert && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
+          <div className="bg-emerald-500 text-white px-6 py-4 rounded-lg shadow-lg border border-emerald-400 flex items-center space-x-3 animate-in slide-in-from-top-2 duration-300">
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            <span className="font-medium">Gift updated successfully!</span>
+          </div>
+        </div>
+      )}
+
       {/* Main Content */}
       <div className="relative z-20 px-6 pb-20 pt-6">
         <div className="max-w-2xl mx-auto">
