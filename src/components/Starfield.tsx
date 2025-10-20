@@ -95,10 +95,6 @@ function StarfieldScene({ scrollProgress }: StarfieldProps) {
       const zOffset = safeScrollProgress * 2000 - 500; // Start at -500, move to 1500
       starsRef.current.position.z = zOffset;
       
-      // Debug: log first few frames
-      if (Math.random() < 0.01) {
-        console.log('Starfield frame:', { scrollProgress, safeScrollProgress, zOffset });
-      }
       
       // Slow rotation for dynamic effect
       starsRef.current.rotation.y += 0.0005;
@@ -189,8 +185,6 @@ function StarfieldScene({ scrollProgress }: StarfieldProps) {
 }
 
 export default function Starfield({ scrollProgress }: StarfieldProps) {
-  // Debug logging
-  console.log('Starfield rendering:', { hasReactThreeFiber, scrollProgress });
   
   if (!hasReactThreeFiber) {
     // Fallback: CSS-based starfield animation

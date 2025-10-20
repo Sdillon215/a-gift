@@ -16,11 +16,8 @@ export default function SendAGiftPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    console.log("Send-a-gift page - Session status:", status);
-    console.log("Send-a-gift page - Session data:", session);
     
     if (status === "unauthenticated") {
-      console.log("Redirecting to login page");
       router.push("/");
     }
   }, [status, router, session]);
@@ -82,14 +79,11 @@ export default function SendAGiftPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Send-a-gift form submitted:", formData);
     
     if (!validateForm()) {
-      console.log("Form validation failed");
       return;
     }
 
-    console.log("Form validation passed, processing gift...");
     setIsLoading(true);
 
     try {
@@ -109,7 +103,6 @@ export default function SendAGiftPage() {
 
       if (response.ok) {
         const result = await response.json();
-        console.log("Gift created successfully:", result);
         
         alert("Gift sent successfully!");
         

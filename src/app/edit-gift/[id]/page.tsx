@@ -70,11 +70,8 @@ export default function EditGiftPage() {
   }, [giftId, status]);
 
   useEffect(() => {
-    console.log("Edit gift page - Session status:", status);
-    console.log("Edit gift page - Session data:", session);
     
     if (status === "unauthenticated") {
-      console.log("Redirecting to login page");
       router.push("/");
     }
   }, [status, router, session]);
@@ -137,14 +134,11 @@ export default function EditGiftPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Edit gift form submitted:", formData);
     
     if (!validateForm()) {
-      console.log("Form validation failed");
       return;
     }
 
-    console.log("Form validation passed, updating gift...");
     setIsLoading(true);
 
     try {
@@ -164,7 +158,6 @@ export default function EditGiftPage() {
 
       if (response.ok) {
         const result = await response.json();
-        console.log("Gift updated successfully:", result);
         
         alert("Gift updated successfully!");
         

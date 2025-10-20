@@ -61,11 +61,8 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    console.log("Home page - Session status:", status);
-    console.log("Home page - Session data:", session);
     
     if (status === "unauthenticated") {
-      console.log("Redirecting to login page");
       router.push("/");
     } else if (status === "authenticated") {
       fetchGifts();

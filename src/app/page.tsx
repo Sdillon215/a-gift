@@ -71,14 +71,11 @@ export default function Home() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted, isLogin:", isLogin, "formData:", formData);
     
     if (!validateForm()) {
-      console.log("Form validation failed");
       return;
     }
 
-    console.log("Form validation passed, starting authentication process");
     setIsLoading(true);
 
     try {
@@ -91,24 +88,19 @@ export default function Home() {
           redirect: false,
         });
 
-        console.log("Login result:", result);
         
         if (result?.error) {
           setErrors({ general: "Invalid credentials" });
         } else if (result?.ok) {
-          console.log("Login successful, checking user role...");
           // Check if user is admin and route accordingly
           if (formData.email === "sdillon215@gmail.com") {
-            console.log("Admin user detected, redirecting to home");
             window.location.href = "/home";
           } else {
-            console.log("Regular user detected, redirecting to send-a-gift");
             window.location.href = "/send-a-gift";
           }
         }
       } else {
         // Handle signup
-        console.log("Starting signup process for:", formData.email);
         
         const response = await fetch("/api/auth/register", {
           method: "POST",
@@ -122,10 +114,8 @@ export default function Home() {
           }),
         });
 
-        console.log("Registration response status:", response.status);
 
         if (response.ok) {
-          console.log("Registration successful, attempting auto-login");
           
           // Auto sign in after successful registration
           const result = await signIn("credentials", {
@@ -135,18 +125,15 @@ export default function Home() {
             redirect: false,
           });
 
-          console.log("Auto-login result:", result);
 
           if (result?.error) {
             setErrors({ general: "Registration successful, but login failed" });
           } else if (result?.ok) {
-            console.log("Auto-login successful, redirecting to send-a-gift for new user");
             // New users always go to send-a-gift page
             window.location.href = "/send-a-gift";
           }
         } else {
           const error = await response.json();
-          console.log("Registration failed:", error);
           setErrors({ general: error.message || "Registration failed" });
         }
       }
@@ -158,7 +145,6 @@ export default function Home() {
   };
 
   const toggleMode = () => {
-    console.log("Toggling mode from", isLogin ? "login" : "signup", "to", !isLogin ? "login" : "signup");
     setIsLogin(!isLogin);
     setFormData({
       email: "",
@@ -185,10 +171,6 @@ export default function Home() {
           <p className="text-gray-600">
             {isLogin ? "Sign in to your account" : "Sign up for a new account"}
           </p>
-          {/* Debug info - remove in production */}
-          <div className="mt-2 text-xs text-gray-500">
-            Mode: {isLogin ? "Login" : "Signup"} | Loading: {isLoading ? "Yes" : "No"}
-          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
