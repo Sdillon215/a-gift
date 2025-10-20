@@ -34,6 +34,7 @@ export default function EditGiftPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingGift, setIsLoadingGift] = useState(true);
+  const [showImageUpload, setShowImageUpload] = useState(false);
 
   // Fetch the existing gift data
   useEffect(() => {
@@ -246,69 +247,120 @@ export default function EditGiftPage() {
               {/* Current Image Display */}
               {gift && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Current Image
-                  </label>
-                  <div className="flex justify-center">
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Current Image
+                    </label>
+                    {!showImageUpload && (
+                      <button
+                        type="button"
+                        onClick={() => setShowImageUpload(true)}
+                        className="p-1.5 text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                        title="Replace image"
+                      >
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                          />
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+                  <div className="aspect-video relative rounded-lg overflow-hidden border border-gray-300">
                     <img
                       src={gift.imageUrl}
                       alt={gift.title}
-                      className="max-w-full h-48 object-cover rounded-lg border border-gray-300"
+                      className="w-full h-full object-cover"
                     />
                   </div>
                 </div>
               )}
 
               {/* New Image Upload */}
-              <div>
-                <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-2">
-                  New Image (optional)
-                </label>
-                <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-emerald-400 transition-colors">
-                  <div className="space-y-1 text-center">
-                    <svg
-                      className="mx-auto h-12 w-12 text-gray-400"
-                      stroke="currentColor"
-                      fill="none"
-                      viewBox="0 0 48 48"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                        strokeWidth={2}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <div className="flex text-sm text-gray-600">
-                      <label
-                        htmlFor="image"
-                        className="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500"
+              {showImageUpload && (
+                <div>
+                  <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-2">
+                    New Image
+                  </label>
+                  <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-emerald-400 transition-colors">
+                    <div className="space-y-1 text-center">
+                      <svg
+                        className="mx-auto h-12 w-12 text-gray-400"
+                        stroke="currentColor"
+                        fill="none"
+                        viewBox="0 0 48 48"
+                        aria-hidden="true"
                       >
-                        <span>Upload a new file</span>
-                        <input
-                          id="image"
-                          name="image"
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageChange}
-                          className="sr-only"
+                        <path
+                          d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
-                      </label>
-                      <p className="pl-1">or drag and drop</p>
+                      </svg>
+                      <div className="flex text-sm text-gray-600">
+                        <label
+                          htmlFor="image"
+                          className="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500"
+                        >
+                          <span>Upload a new file</span>
+                          <input
+                            id="image"
+                            name="image"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className="sr-only"
+                          />
+                        </label>
+                        <p className="pl-1">or drag and drop</p>
+                      </div>
+                      <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
                     </div>
-                    <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                  </div>
+                  {formData.image && (
+                    <div className="mt-4">
+                      <div className="text-sm text-emerald-600 mb-2">
+                        Selected: {formData.image.name}
+                      </div>
+                      <div className="aspect-video relative rounded-lg overflow-hidden border border-gray-300">
+                        <img
+                          src={URL.createObjectURL(formData.image)}
+                          alt="Preview of selected image"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    </div>
+                  )}
+                  {errors.image && (
+                    <p className="text-red-500 text-sm mt-1">{errors.image}</p>
+                  )}
+                  <div className="mt-3 text-center">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowImageUpload(false);
+                        setFormData(prev => ({ ...prev, image: null }));
+                        if (errors.image) {
+                          setErrors(prev => ({ ...prev, image: "" }));
+                        }
+                      }}
+                      className="bg-gray-100 text-gray-700 py-2 px-4 rounded-lg font-medium hover:bg-gray-200 transition-colors border border-gray-300"
+                    >
+                      Cancel
+                    </button>
                   </div>
                 </div>
-                {formData.image && (
-                  <div className="mt-2 text-sm text-emerald-600">
-                    Selected: {formData.image.name}
-                  </div>
-                )}
-                {errors.image && (
-                  <p className="text-red-500 text-sm mt-1">{errors.image}</p>
-                )}
-              </div>
+              )}
 
               {/* Title */}
               <div>
