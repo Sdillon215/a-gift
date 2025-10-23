@@ -105,7 +105,7 @@ export default function HomePage() {
             transition={{ duration: 1 }}
           >
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white mb-4 md:mb-6 px-4">
-              Explore the Universe
+              Happy Birthday Ashley!
             </h2>
             <p className="text-base sm:text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto px-4">
               Journey through the cosmos of gifts, where every star represents a unique treasure
