@@ -3,6 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 export default function SendAGiftPage() {
   const { data: session, status } = useSession();
@@ -17,7 +18,7 @@ export default function SendAGiftPage() {
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
   useEffect(() => {
-    
+
     if (status === "unauthenticated") {
       router.push("/");
     }
@@ -80,7 +81,7 @@ export default function SendAGiftPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -104,16 +105,16 @@ export default function SendAGiftPage() {
 
       if (response.ok) {
         const result = await response.json();
-        
+
         setShowSuccessAlert(true);
-        
+
         // Reset form
         setFormData({
           image: null,
           title: "",
           message: "",
         });
-        
+
         // Auto-hide alert after 3 seconds
         setTimeout(() => {
           setShowSuccessAlert(false);
@@ -165,14 +166,95 @@ export default function SendAGiftPage() {
       {/* Main Content */}
       <div className="relative z-20 px-6 pb-20 pt-6">
         <div className="max-w-2xl mx-auto">
+          {/* Ashley Image */}
+          <div className="mb-8">
+            <div className="relative w-full aspect-video overflow-hidden rounded-2xl shadow-2xl border-2 border-white/30 hover:border-white/50 transition-all duration-300">
+              <Image
+                src="/images/ashley-sean.jpg"
+                alt="Ashley"
+                fill
+                className="object-cover hover:scale-105 transition-transform duration-300"
+                priority
+              />
+            </div>
+          </div>
           {/* Header */}
           <div className="text-center mb-8">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Send a Gift
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Let's make Ashley's birthday special!
             </h2>
-            <p className="text-xl text-emerald-100">
-              Share your special moment with a beautiful gift
+            <p className="text-xl text-emerald-100 mb-4">
+              Hi! I'm Sean and I'm lucky enough to be Ashley's partner. If you've made it here, you've also been lucky enough to be a part of her life, and I would love your help to make her birthday special!
             </p>
+            <p className="text-xl text-emerald-100 mb-4">
+              Ashley loves handmade personal gifts. Unfortunately, I am not very skilled at crafting. However, I am decent at coding, so I have decided to use this creative skill set to put together a gift that I hope turns into something truly meaningful to Ashley.
+            </p>
+            <p className="text-xl text-emerald-100 mb-4">
+              The gift I would like to give her is simple. A reminder and a validation of the incredibly positive impact she has on the world!
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">How You Can Help</h2>
+
+            <div className="space-y-4 text-left">
+              <div className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-8 h-8 bg-emerald-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                  1
+                </div>
+                <p className="text-lg text-emerald-100">
+                  <span className="font-semibold text-white">Upload a photo</span> - Share a picture of you and Ashley together, or a special memory you have with her.
+                </p>
+              </div>
+
+              <div className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-8 h-8 bg-emerald-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                  2
+                </div>
+                <p className="text-lg text-emerald-100">
+                  <span className="font-semibold text-white">Write a message</span> - Tell Ashley how she's impacted your life or share a meaningful memory you've had with her.
+                </p>
+              </div>
+
+               <div className="flex items-start space-x-3">
+                 <div className="flex-shrink-0 w-8 h-8 bg-emerald-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                   3
+                 </div>
+                 <p className="text-lg text-emerald-100">
+                   <span className="font-semibold text-white">Submit your gift card</span> - Click "Send Gift" and your contribution will be added to the home feed to be presented to Ashley on her birthday!
+                 </p>
+               </div>
+             </div>
+
+             <div className="mt-6 p-4 bg-amber-500/20 border border-amber-400/30 rounded-lg">
+               <div className="flex items-start space-x-3">
+                 <div className="flex-shrink-0">
+                   <svg className="w-5 h-5 text-amber-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                     <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                   </svg>
+                 </div>
+                 <div>
+                   <div className="flex items-center justify-between mb-1">
+                     <p className="text-sm text-amber-100 font-medium mx-auto text-center">Privacy Notice</p>
+                     <svg className="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                       <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                     </svg>
+                   </div>
+                   <p className="text-xs text-amber-200">
+                     Although the gift cards are visible to everyone on the home feed, these cards are meant to be personal. If you are more comfortable sharing a private message, you can do so by selecting the icon on the message input. Images, captions, and names will still be visible to all of you on the home feed.
+                   </p>
+                 </div>
+               </div>
+             </div>
+
+             <div className="mt-4 p-4 bg-red-500/20 border border-red-400/30 rounded-lg">
+               <div className="flex items-center justify-between mb-1">
+                 <span className="text-2xl">🎂</span>
+                 <p className="text-sm text-red-100 font-medium">SURPRISE!</p>
+                 <span className="text-2xl">🎂</span>
+               </div>
+               <p className="text-xs text-red-200">
+                 This is a surprise for Ashley! Let's keep it a secret until her birthday! 🤫
+               </p>
+             </div>
+
           </div>
 
           {/* Form */}
@@ -187,7 +269,7 @@ export default function SendAGiftPage() {
               {/* Image Upload */}
               <div>
                 <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-2">
-                  Gift Image *
+                  Gift Card Image *
                 </label>
                 <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-emerald-400 transition-colors">
                   <div className="space-y-1 text-center">
@@ -238,7 +320,7 @@ export default function SendAGiftPage() {
               {/* Title */}
               <div>
                 <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-                  Gift Title *
+                  Image Caption *
                 </label>
                 <input
                   type="text"
@@ -246,10 +328,9 @@ export default function SendAGiftPage() {
                   name="title"
                   value={formData.title}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent focus:outline-none transition-colors text-gray-900 ${
-                    errors.title ? "border-red-500" : "border-gray-300"
-                  }`}
-                  placeholder="Enter a title for your gift"
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent focus:outline-none transition-colors text-gray-900 ${errors.title ? "border-red-500" : "border-gray-300"
+                    }`}
+                  placeholder="Add a caption to your image"
                 />
                 {errors.title && (
                   <p className="text-red-500 text-sm mt-1">{errors.title}</p>
@@ -268,9 +349,8 @@ export default function SendAGiftPage() {
                   onChange={handleInputChange}
                   rows={4}
                   maxLength={500}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent focus:outline-none transition-colors text-gray-900 resize-none ${
-                    errors.message ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent focus:outline-none transition-colors text-gray-900 resize-none ${errors.message ? "border-red-500" : "border-gray-300"
+                    }`}
                   placeholder="Write your message (up to 500 characters)"
                 />
                 <div className="mt-1 flex justify-between text-sm">

@@ -17,10 +17,15 @@ export default function Home() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  // Redirect to home if already logged in
+  // Redirect to appropriate page if already logged in
   useEffect(() => {
     if (status === "authenticated" && session) {
-      router.push("/home");
+      // Check if user is admin and route accordingly
+      if (session.user?.email === "sdillon215@gmail.com") {
+        router.push("/home");
+      } else {
+        router.push("/send-a-gift");
+      }
     }
   }, [status, session, router]);
 
@@ -94,9 +99,9 @@ export default function Home() {
         } else if (result?.ok) {
           // Check if user is admin and route accordingly
           if (formData.email === "sdillon215@gmail.com") {
-            window.location.href = "/home";
+            router.push("/home");
           } else {
-            window.location.href = "/send-a-gift";
+            router.push("/send-a-gift");
           }
         }
       } else {
@@ -130,7 +135,7 @@ export default function Home() {
             setErrors({ general: "Registration successful, but login failed" });
           } else if (result?.ok) {
             // New users always go to send-a-gift page
-            window.location.href = "/send-a-gift";
+            router.push("/send-a-gift");
           }
         } else {
           const error = await response.json();
