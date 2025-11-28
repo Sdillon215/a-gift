@@ -89,11 +89,14 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Wrap everything in a try-catch to ensure we always return JSON
   try {
+    console.log("[GET /api/gifts] Handler started");
+    
     // Check if Prisma is properly initialized
     if (!prisma || !('gift' in prisma)) {
-      console.error("PrismaClient not properly initialized");
+      console.error("[GET /api/gifts] PrismaClient not properly initialized");
       return NextResponse.json(
         { 
           message: "Database connection error: PrismaClient not initialized",
@@ -102,11 +105,14 @@ export async function GET() {
         { status: 500 }
       );
     }
+    console.log("[GET /api/gifts] PrismaClient is initialized");
 
     // Check if user is authenticated
     let session;
     try {
+      console.log("[GET /api/gifts] Getting session...");
       session = await getServerSession(authOptions);
+      console.log("[GET /api/gifts] Session retrieved:", session ? "exists" : "null");
     } catch (sessionError) {
       console.error("Error getting session:", sessionError);
       const sessionErrorMessage = sessionError instanceof Error ? sessionError.message : "Unknown session error";
@@ -124,15 +130,18 @@ export async function GET() {
     }
 
     if (!session?.user?.id) {
+      console.log("[GET /api/gifts] No session or user ID");
       return NextResponse.json(
         { message: "Unauthorized" },
         { status: 401 }
       );
     }
+    console.log("[GET /api/gifts] User authenticated:", session.user.id);
 
     // Get all gifts with user information
     let gifts;
     try {
+      console.log("[GET /api/gifts] Querying database...");
       gifts = await prisma.gift.findMany({
         include: {
           user: {
@@ -147,8 +156,9 @@ export async function GET() {
           createdAt: "desc",
         },
       });
+      console.log("[GET /api/gifts] Database query successful, found", gifts.length, "gifts");
     } catch (dbError) {
-      console.error("Database error fetching gifts:", dbError);
+      console.error("[GET /api/gifts] Database error fetching gifts:", dbError);
       const dbErrorMessage = dbError instanceof Error ? dbError.message : "Unknown database error";
       const dbErrorStack = dbError instanceof Error ? dbError.stack : undefined;
       console.error("Database error stack:", dbErrorStack);
@@ -163,20 +173,34 @@ export async function GET() {
       );
     }
 
+    console.log("[GET /api/gifts] Returning response with", gifts.length, "gifts");
     return NextResponse.json({ gifts });
   } catch (error) {
-    console.error("Error fetching gifts:", error);
+    console.error("[GET /api/gifts] Top-level error:", error);
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     const errorStack = error instanceof Error ? error.stack : undefined;
     console.error("Error stack:", errorStack);
-    // Include error details in response for debugging
-    return NextResponse.json(
-      { 
-        message: `Internal server error: ${errorMessage}`,
-        error: errorMessage,
-        stack: errorStack
-      },
-      { status: 500 }
-    );
+    
+    // Try to return JSON, but if that fails, return a simple text response
+    try {
+      return NextResponse.json(
+        { 
+          message: `Internal server error: ${errorMessage}`,
+          error: errorMessage,
+          stack: errorStack
+        },
+        { status: 500 }
+      );
+    } catch (jsonError) {
+      // If JSON serialization fails, return a plain text response
+      console.error("Failed to serialize error response:", jsonError);
+      return new NextResponse(
+        `Internal server error: ${errorMessage}`,
+        { 
+          status: 500,
+          headers: { 'Content-Type': 'text/plain' }
+        }
+      );
+    }
   }
 }
