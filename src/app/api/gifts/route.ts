@@ -90,8 +90,15 @@ export async function GET() {
     } catch (sessionError) {
       console.error("Error getting session:", sessionError);
       const sessionErrorMessage = sessionError instanceof Error ? sessionError.message : "Unknown session error";
+      const sessionErrorStack = sessionError instanceof Error ? sessionError.stack : undefined;
+      console.error("Session error stack:", sessionErrorStack);
+      // Temporary: Include error details in response for debugging
       return NextResponse.json(
-        { message: `Session error: ${sessionErrorMessage}` },
+        { 
+          message: `Session error: ${sessionErrorMessage}`,
+          error: process.env.NODE_ENV === "development" ? sessionErrorMessage : undefined,
+          stack: process.env.NODE_ENV === "development" ? sessionErrorStack : undefined
+        },
         { status: 500 }
       );
     }
@@ -125,8 +132,13 @@ export async function GET() {
       const dbErrorMessage = dbError instanceof Error ? dbError.message : "Unknown database error";
       const dbErrorStack = dbError instanceof Error ? dbError.stack : undefined;
       console.error("Database error stack:", dbErrorStack);
+      // Temporary: Include error details in response for debugging
       return NextResponse.json(
-        { message: `Database error: ${dbErrorMessage}` },
+        { 
+          message: `Database error: ${dbErrorMessage}`,
+          error: process.env.NODE_ENV === "development" ? dbErrorMessage : undefined,
+          stack: process.env.NODE_ENV === "development" ? dbErrorStack : undefined
+        },
         { status: 500 }
       );
     }
@@ -137,8 +149,13 @@ export async function GET() {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     const errorStack = error instanceof Error ? error.stack : undefined;
     console.error("Error stack:", errorStack);
+    // Temporary: Include error details in response for debugging
     return NextResponse.json(
-      { message: `Internal server error: ${errorMessage}` },
+      { 
+        message: `Internal server error: ${errorMessage}`,
+        error: process.env.NODE_ENV === "development" ? errorMessage : undefined,
+        stack: process.env.NODE_ENV === "development" ? errorStack : undefined
+      },
       { status: 500 }
     );
   }

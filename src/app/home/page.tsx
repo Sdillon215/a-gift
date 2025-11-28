@@ -51,7 +51,19 @@ export default function HomePage() {
         const data = await response.json();
         setGifts(data.gifts || []);
       } else {
-        console.error("Failed to fetch gifts");
+        // Log the error response for debugging
+        try {
+          const errorData = await response.json();
+          console.error("Failed to fetch gifts:", {
+            status: response.status,
+            statusText: response.statusText,
+            message: errorData.message,
+            error: errorData.error,
+            stack: errorData.stack
+          });
+        } catch (parseError) {
+          console.error("Failed to fetch gifts - could not parse error:", response.status, response.statusText);
+        }
       }
     } catch (error) {
       console.error("Error fetching gifts:", error);
