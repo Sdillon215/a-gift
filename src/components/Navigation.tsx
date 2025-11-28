@@ -17,7 +17,7 @@ try {
 } catch {
   // Fallback if framer-motion is not installed
   motion = { 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, react/display-name
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     nav: ({ children, ...props }: any) => <nav {...props}>{children}</nav> 
   };
 }

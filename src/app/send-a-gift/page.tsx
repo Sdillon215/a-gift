@@ -209,7 +209,7 @@ export default function SendAGiftPage() {
                   2
                 </div>
                 <p className="text-lg text-emerald-100">
-                  <span className="font-semibold text-white">Write a message</span> - Tell Ashley how she's impacted your life or share a meaningful memory you've had with her.
+                  <span className="font-semibold text-white">Write a message</span> - Tell Ashley how she&apos;s impacted your life or share a meaningful memory you&apos;ve had with her.
                 </p>
               </div>
 
@@ -218,7 +218,7 @@ export default function SendAGiftPage() {
                    3
                  </div>
                  <p className="text-lg text-emerald-100">
-                   <span className="font-semibold text-white">Submit your gift card</span> - Click "Send Gift" and your contribution will be added to the home feed to be presented to Ashley on her birthday!
+                   <span className="font-semibold text-white">Submit your gift card</span> - Click &quot;Send Gift&quot; and your contribution will be added to the home feed to be presented to Ashley on her birthday!
                  </p>
                </div>
              </div>
@@ -251,7 +251,7 @@ export default function SendAGiftPage() {
                  <span className="text-2xl">🎂</span>
                </div>
                <p className="text-xs text-red-200">
-                 This is a surprise for Ashley! Let's keep it a secret until her birthday! 🤫
+                 This is a surprise for Ashley! Let&apos;s keep it a secret until her birthday! 🤫
                </p>
              </div>
 

@@ -83,7 +83,7 @@ function StarfieldScene({ scrollProgress }: StarfieldProps) {
       colors[i * 3 + 2] = color.b;
     }
     return colors;
-  }, [hasReactThreeFiber]);
+  }, []);
 
   // Use frame hook - only if React Three Fiber is available
   useFrame(() => {
