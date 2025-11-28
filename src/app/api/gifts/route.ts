@@ -104,10 +104,20 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     // Check if user is authenticated
-    const session = await getServerSession(authOptions);
+    let session;
+    try {
+      session = await getServerSession(authOptions);
+    } catch (sessionError) {
+      console.error("Error getting session:", sessionError);
+      return NextResponse.json(
+        { message: "Authentication error" },
+        { status: 500 }
+      );
+    }
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { message: "Unauthorized" },
@@ -116,25 +126,37 @@ export async function GET() {
     }
 
     // Get all gifts with user information
-    const gifts = await prisma.gift.findMany({
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
+    let gifts;
+    try {
+      gifts = await prisma.gift.findMany({
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
           },
         },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+    } catch (dbError) {
+      console.error("Database error fetching gifts:", dbError);
+      const dbErrorMessage = dbError instanceof Error ? dbError.message : "Unknown database error";
+      return NextResponse.json(
+        { message: `Database error: ${dbErrorMessage}` },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({ gifts });
   } catch (error) {
     console.error("Error fetching gifts:", error);
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    console.error("Error stack:", errorStack);
     return NextResponse.json(
       { message: `Internal server error: ${errorMessage}` },
       { status: 500 }
