@@ -51,18 +51,7 @@ export default function HomePage() {
         const data = await response.json();
         setGifts(data.gifts || []);
       } else {
-        // Safely parse error response
-        let errorMessage = "Failed to fetch gifts";
-        try {
-          const contentType = response.headers.get("content-type");
-          if (contentType && contentType.includes("application/json")) {
-            const error = await response.json();
-            errorMessage = error.message || errorMessage;
-          }
-        } catch (parseError) {
-          console.error("Error parsing error response:", parseError);
-        }
-        console.error("Failed to fetch gifts:", errorMessage, `Status: ${response.status}`);
+        console.error("Failed to fetch gifts");
       }
     } catch (error) {
       console.error("Error fetching gifts:", error);

@@ -120,23 +120,9 @@ export default function SendAGiftPage() {
           setShowSuccessAlert(false);
         }, 3000);
       } else {
-        // Safely parse error response
-        let errorMessage = "Failed to send gift. Please try again.";
-        try {
-          const contentType = response.headers.get("content-type");
-          if (contentType && contentType.includes("application/json")) {
-            const error = await response.json();
-            errorMessage = error.message || errorMessage;
-          } else {
-            const text = await response.text();
-            errorMessage = text || errorMessage;
-          }
-        } catch (parseError) {
-          console.error("Error parsing error response:", parseError);
-          errorMessage = `Server error (${response.status}). Please try again.`;
-        }
-        console.error("Error creating gift:", errorMessage);
-        setErrors({ general: errorMessage });
+        const error = await response.json();
+        console.error("Error creating gift:", error);
+        setErrors({ general: error.message || "Failed to send gift. Please try again." });
       }
     } catch (error) {
       console.error("Error sending gift:", error);

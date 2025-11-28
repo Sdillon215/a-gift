@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
 import { put } from "@vercel/blob";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { generateBlurDataURL } from "@/lib/image-utils";
-import { prisma } from "@/lib/db";
+
+const prisma = new PrismaClient();
 
 export async function POST(request: NextRequest) {
   try {
@@ -38,47 +40,23 @@ export async function POST(request: NextRequest) {
     }
 
     // Upload image to Vercel Blob
-    let blob;
-    try {
-      blob = await put(image.name, image, {
-        access: "public",
-      });
-    } catch (blobError) {
-      console.error("Error uploading to Vercel Blob:", blobError);
-      return NextResponse.json(
-        { message: "Failed to upload image. Please check your BLOB_READ_WRITE_TOKEN environment variable." },
-        { status: 500 }
-      );
-    }
+    const blob = await put(image.name, image, {
+      access: "public",
+    });
 
-    // Generate blur data URL for the image (non-blocking, can fail gracefully)
-    let blurDataUrl: string | null = null;
-    try {
-      blurDataUrl = await generateBlurDataURL(blob.url);
-    } catch (blurError) {
-      console.warn("Failed to generate blur data URL:", blurError);
-      // Continue without blur data URL
-    }
+    // Generate blur data URL for the image
+    const blurDataUrl = await generateBlurDataURL(blob.url);
 
     // Save gift to database
-    let gift;
-    try {
-      gift = await prisma.gift.create({
-        data: {
-          title,
-          message,
-          imageUrl: blob.url,
-          blurDataUrl,
-          userId: session.user.id,
-        },
-      });
-    } catch (dbError) {
-      console.error("Database error:", dbError);
-      return NextResponse.json(
-        { message: "Failed to save gift to database. Please try again." },
-        { status: 500 }
-      );
-    }
+    const gift = await prisma.gift.create({
+      data: {
+        title,
+        message,
+        imageUrl: blob.url,
+        blurDataUrl,
+        userId: session.user.id,
+      },
+    });
 
     return NextResponse.json(
       { 
@@ -96,31 +74,17 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error("Error creating gift:", error);
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
-      { message: `Internal server error: ${errorMessage}` },
+      { message: "Internal server error" },
       { status: 500 }
     );
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Check if user is authenticated
-    let session;
-    try {
-      // In Next.js 15, getServerSession works without request, but we can pass headers for better compatibility
-      session = await getServerSession(authOptions);
-    } catch (sessionError) {
-      console.error("Error getting session:", sessionError);
-      const sessionErrorMessage = sessionError instanceof Error ? sessionError.message : "Unknown session error";
-      console.error("Session error details:", sessionErrorMessage);
-      return NextResponse.json(
-        { message: `Authentication error: ${sessionErrorMessage}` },
-        { status: 500 }
-      );
-    }
-
+    const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
       return NextResponse.json(
         { message: "Unauthorized" },
@@ -129,39 +93,26 @@ export async function GET(request: NextRequest) {
     }
 
     // Get all gifts with user information
-    let gifts;
-    try {
-      gifts = await prisma.gift.findMany({
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
+    const gifts = await prisma.gift.findMany({
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
           },
         },
-        orderBy: {
-          createdAt: "desc",
-        },
-      });
-    } catch (dbError) {
-      console.error("Database error fetching gifts:", dbError);
-      const dbErrorMessage = dbError instanceof Error ? dbError.message : "Unknown database error";
-      return NextResponse.json(
-        { message: `Database error: ${dbErrorMessage}` },
-        { status: 500 }
-      );
-    }
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
 
     return NextResponse.json({ gifts });
   } catch (error) {
     console.error("Error fetching gifts:", error);
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    const errorStack = error instanceof Error ? error.stack : undefined;
-    console.error("Error stack:", errorStack);
     return NextResponse.json(
-      { message: `Internal server error: ${errorMessage}` },
+      { message: "Internal server error" },
       { status: 500 }
     );
   }

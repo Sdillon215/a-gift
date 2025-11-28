@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
 import { put } from "@vercel/blob";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { generateBlurDataURL } from "@/lib/image-utils";
-import { prisma } from "@/lib/db";
+
+const prisma = new PrismaClient();
 
 // GET - Fetch a specific gift
 export async function GET(
@@ -56,9 +58,8 @@ export async function GET(
     return NextResponse.json({ gift });
   } catch (error) {
     console.error("Error fetching gift:", error);
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
-      { message: `Internal server error: ${errorMessage}` },
+      { message: "Internal server error" },
       { status: 500 }
     );
   }
@@ -128,26 +129,12 @@ export async function PUT(
 
     // Upload new image if provided
     if (image) {
-      let blob;
-      try {
-        blob = await put(image.name, image, {
-          access: "public",
-        });
-      } catch (blobError) {
-        console.error("Error uploading to Vercel Blob:", blobError);
-        return NextResponse.json(
-          { message: "Failed to upload image. Please check your BLOB_READ_WRITE_TOKEN environment variable." },
-          { status: 500 }
-        );
-      }
+      const blob = await put(image.name, image, {
+        access: "public",
+      });
 
-      // Generate blur data URL for the new image (non-blocking)
-      try {
-        blurDataUrl = await generateBlurDataURL(blob.url);
-      } catch (blurError) {
-        console.warn("Failed to generate blur data URL:", blurError);
-        // Continue without blur data URL
-      }
+      // Generate blur data URL for the new image
+      blurDataUrl = await generateBlurDataURL(blob.url);
       imageUrl = blob.url;
     }
 
@@ -181,9 +168,8 @@ export async function PUT(
     );
   } catch (error) {
     console.error("Error updating gift:", error);
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
-      { message: `Internal server error: ${errorMessage}` },
+      { message: "Internal server error" },
       { status: 500 }
     );
   }
@@ -240,9 +226,8 @@ export async function DELETE(
     );
   } catch (error) {
     console.error("Error deleting gift:", error);
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
-      { message: `Internal server error: ${errorMessage}` },
+      { message: "Internal server error" },
       { status: 500 }
     );
   }
