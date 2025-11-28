@@ -84,7 +84,18 @@ export async function POST(request: NextRequest) {
 export async function GET() {
   try {
     // Check if user is authenticated
-    const session = await getServerSession(authOptions);
+    let session;
+    try {
+      session = await getServerSession(authOptions);
+    } catch (sessionError) {
+      console.error("Error getting session:", sessionError);
+      const sessionErrorMessage = sessionError instanceof Error ? sessionError.message : "Unknown session error";
+      return NextResponse.json(
+        { message: `Session error: ${sessionErrorMessage}` },
+        { status: 500 }
+      );
+    }
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { message: "Unauthorized" },
@@ -93,26 +104,41 @@ export async function GET() {
     }
 
     // Get all gifts with user information
-    const gifts = await prisma.gift.findMany({
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
+    let gifts;
+    try {
+      gifts = await prisma.gift.findMany({
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
           },
         },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+    } catch (dbError) {
+      console.error("Database error fetching gifts:", dbError);
+      const dbErrorMessage = dbError instanceof Error ? dbError.message : "Unknown database error";
+      const dbErrorStack = dbError instanceof Error ? dbError.stack : undefined;
+      console.error("Database error stack:", dbErrorStack);
+      return NextResponse.json(
+        { message: `Database error: ${dbErrorMessage}` },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({ gifts });
   } catch (error) {
     console.error("Error fetching gifts:", error);
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    console.error("Error stack:", errorStack);
     return NextResponse.json(
-      { message: "Internal server error" },
+      { message: `Internal server error: ${errorMessage}` },
       { status: 500 }
     );
   }
