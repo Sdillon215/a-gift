@@ -111,8 +111,12 @@ export async function GET(request: NextRequest) {
     let session;
     try {
       console.log("[GET /api/gifts] Getting session...");
+      // getServerSession should work in Next.js 15, but let's ensure it has proper context
       session = await getServerSession(authOptions);
       console.log("[GET /api/gifts] Session retrieved:", session ? "exists" : "null");
+      if (session) {
+        console.log("[GET /api/gifts] Session user ID:", session.user?.id);
+      }
     } catch (sessionError) {
       console.error("Error getting session:", sessionError);
       const sessionErrorMessage = sessionError instanceof Error ? sessionError.message : "Unknown session error";
