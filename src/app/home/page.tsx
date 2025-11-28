@@ -15,7 +15,7 @@ try {
   motion = require("framer-motion").motion;
 } catch {
   // Fallback if framer-motion is not installed
-  motion = { 
+  motion = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     div: ({ children, ...props }: any) => <div {...props}>{children}</div>
   };
@@ -61,7 +61,7 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    
+
     if (status === "unauthenticated") {
       router.push("/");
     } else if (status === "authenticated") {
@@ -90,7 +90,7 @@ export default function HomePage() {
     <div className="relative z-20">
 
       {/* Main Content with Parallax Effects */}
-      <motion.div 
+      <motion.div
         className="relative z-20 px-4 md:px-6 pb-20"
         style={{
           y: scrollProgress * -100, // Stronger parallax for content
@@ -98,7 +98,7 @@ export default function HomePage() {
       >
         <div className="max-w-7xl mx-auto">
           {/* Hero Section */}
-          <motion.div 
+          <motion.div
             className="text-center mb-12 md:mb-16 pt-12 md:pt-20"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -108,21 +108,25 @@ export default function HomePage() {
               Happy Birthday Ashley!
             </h2>
             <p className="text-base sm:text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto px-4">
-              Journey through the cosmos of gifts, where every star represents a unique treasure
+              You are such a bright light in the universe and have such a positive influence on the world!
+            </p>
+            <p className="text-base sm:text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto pt-4 px-4">
+              The joy and love that you spread is immeasurable. The playful energy you embody is contagious. The impact that you have on those around you is nothing short of beautiful.
+            </p>
+            <p className="text-base sm:text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto pt-4 px-4">
+              For your birthday this year I wanted to create a meaningful gift to remind you of the incredible impact you have. However, I couldn't create this gift alone.
+
             </p>
           </motion.div>
 
           {/* Gifts Introduction */}
-          <motion.div 
+          <motion.div
             className="text-center mb-12 md:mb-16 px-4"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 md:mb-6">Discover Cosmic Gifts</h3>
-            <p className="text-base sm:text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto mb-6 md:mb-8">
-              Journey through the universe of gifts, where each star reveals a unique treasure
-            </p>
+            <h3 className="text-xl sm:text-2xl md:text-2xl font-bold text-emerald-100 mb-4 md:mb-6">Scroll through the stars to see how far your light shines 💚</h3>
             {giftsLoading && (
               <div className="flex items-center justify-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
@@ -140,7 +144,7 @@ export default function HomePage() {
 
           {/* Individual Gift Cards Spaced Throughout */}
           {!giftsLoading && gifts.length > 0 && gifts.map((gift, index) => (
-            <motion.div 
+            <motion.div
               key={gift.id}
               className="flex justify-center mb-20 md:mb-32 px-4"
               initial={{ opacity: 0, y: 100 }}
@@ -155,7 +159,7 @@ export default function HomePage() {
           ))}
 
           {/* Continue Your Journey Section */}
-          <motion.div 
+          <motion.div
             className="mt-32 text-center"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -167,13 +171,13 @@ export default function HomePage() {
               The deeper you scroll, the further into the starfield you travel
             </p>
             <div className="h-96 flex items-center justify-center">
-              <motion.div 
+              <motion.div
                 className="text-8xl"
-                animate={{ 
+                animate={{
                   rotate: 360,
                   scale: [1, 1.2, 1]
                 }}
-                transition={{ 
+                transition={{
                   duration: 20,
                   repeat: Infinity,
                   ease: "linear"
@@ -186,7 +190,7 @@ export default function HomePage() {
 
           {/* Deeper Into Space Section */}
           <div className="h-screen flex items-center justify-center mt-32">
-            <motion.div 
+            <motion.div
               className="text-center"
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
