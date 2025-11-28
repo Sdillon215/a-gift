@@ -5,7 +5,15 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { generateBlurDataURL } from "@/lib/image-utils";
 
-const prisma = new PrismaClient();
+// Initialize Prisma with error handling
+let prisma: PrismaClient;
+try {
+  prisma = new PrismaClient();
+} catch (prismaError) {
+  console.error("Failed to initialize PrismaClient:", prismaError);
+  // Create a dummy client that will throw on use (so we can catch it)
+  prisma = {} as PrismaClient;
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -83,6 +91,18 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
+    // Check if Prisma is properly initialized
+    if (!prisma || !('gift' in prisma)) {
+      console.error("PrismaClient not properly initialized");
+      return NextResponse.json(
+        { 
+          message: "Database connection error: PrismaClient not initialized",
+          error: "PrismaClient initialization failed"
+        },
+        { status: 500 }
+      );
+    }
+
     // Check if user is authenticated
     let session;
     try {
@@ -92,12 +112,12 @@ export async function GET() {
       const sessionErrorMessage = sessionError instanceof Error ? sessionError.message : "Unknown session error";
       const sessionErrorStack = sessionError instanceof Error ? sessionError.stack : undefined;
       console.error("Session error stack:", sessionErrorStack);
-      // Temporary: Include error details in response for debugging
+      // Include error details in response for debugging
       return NextResponse.json(
         { 
           message: `Session error: ${sessionErrorMessage}`,
-          error: process.env.NODE_ENV === "development" ? sessionErrorMessage : undefined,
-          stack: process.env.NODE_ENV === "development" ? sessionErrorStack : undefined
+          error: sessionErrorMessage,
+          stack: sessionErrorStack
         },
         { status: 500 }
       );
@@ -132,12 +152,12 @@ export async function GET() {
       const dbErrorMessage = dbError instanceof Error ? dbError.message : "Unknown database error";
       const dbErrorStack = dbError instanceof Error ? dbError.stack : undefined;
       console.error("Database error stack:", dbErrorStack);
-      // Temporary: Include error details in response for debugging
+      // Include error details in response for debugging
       return NextResponse.json(
         { 
           message: `Database error: ${dbErrorMessage}`,
-          error: process.env.NODE_ENV === "development" ? dbErrorMessage : undefined,
-          stack: process.env.NODE_ENV === "development" ? dbErrorStack : undefined
+          error: dbErrorMessage,
+          stack: dbErrorStack
         },
         { status: 500 }
       );
@@ -149,12 +169,12 @@ export async function GET() {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     const errorStack = error instanceof Error ? error.stack : undefined;
     console.error("Error stack:", errorStack);
-    // Temporary: Include error details in response for debugging
+    // Include error details in response for debugging
     return NextResponse.json(
       { 
         message: `Internal server error: ${errorMessage}`,
-        error: process.env.NODE_ENV === "development" ? errorMessage : undefined,
-        stack: process.env.NODE_ENV === "development" ? errorStack : undefined
+        error: errorMessage,
+        stack: errorStack
       },
       { status: 500 }
     );
