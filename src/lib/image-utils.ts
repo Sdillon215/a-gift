@@ -1,4 +1,5 @@
-import { getPlaiceholder } from "plaiceholder";
+// Lazy import to avoid loading sharp at module initialization
+// This prevents errors when sharp is not available (e.g., on Vercel Linux)
 
 export interface ImageWithBlur {
   src: string;
@@ -12,6 +13,8 @@ export interface ImageWithBlur {
  */
 export async function generateBlurDataURL(imageUrl: string): Promise<string | null> {
   try {
+    // Lazy import to avoid module load errors if sharp is not available
+    const { getPlaiceholder } = await import("plaiceholder");
     const { base64 } = await getPlaiceholder(imageUrl);
     return base64;
   } catch (error) {
