@@ -104,7 +104,7 @@ export default function SendAGiftPage() {
       });
 
       if (response.ok) {
-        const result = await response.json();
+        await response.json();
 
         setShowSuccessAlert(true);
 
@@ -181,10 +181,10 @@ export default function SendAGiftPage() {
           {/* Header */}
           <div className="text-center mb-8">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Let's make Ashley's birthday special!
+              Let&apos;s make Ashley&apos;s birthday special!
             </h2>
             <p className="text-xl text-emerald-100 mb-4">
-              Hi! I'm Sean and I'm lucky enough to be Ashley's partner. If you've made it here, you've also been lucky enough to be a part of her life, and I would love your help to make her birthday special!
+              Hi! I&apos;m Sean and I&apos;m lucky enough to be Ashley&apos;s partner. If you&apos;ve made it here, you&apos;ve also been lucky enough to be a part of her life, and I would love your help to make her birthday special!
             </p>
             <p className="text-xl text-emerald-100 mb-4">
               Ashley loves handmade personal gifts. Unfortunately, I am not very skilled at crafting. However, I am decent at coding, so I have decided to use this creative skill set to put together a gift that I hope turns into something truly meaningful to Ashley.

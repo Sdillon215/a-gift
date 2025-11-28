@@ -114,7 +114,7 @@ export default function HomePage() {
               The joy and love that you spread is immeasurable. The playful energy you embody is contagious. The impact that you have on those around you is nothing short of beautiful.
             </p>
             <p className="text-base sm:text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto pt-4 px-4">
-              For your birthday this year I wanted to create a meaningful gift to remind you of the incredible impact you have. However, I couldn't create this gift alone.
+              For your birthday this year I wanted to create a meaningful gift to remind you of the incredible impact you have. However, I couldn&apos;t create this gift alone.
 
             </p>
           </motion.div>

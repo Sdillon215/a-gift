@@ -3,6 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 interface Gift {
   id: string;
@@ -158,7 +159,7 @@ export default function EditGiftPage() {
       });
 
       if (response.ok) {
-        const result = await response.json();
+        await response.json();
         
         setShowSuccessAlert(true);
         
@@ -285,10 +286,11 @@ export default function EditGiftPage() {
                     )}
                   </div>
                   <div className="aspect-video relative rounded-lg overflow-hidden border border-gray-300">
-                    <img
+                    <Image
                       src={gift.imageUrl}
                       alt={gift.title}
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
                     />
                   </div>
                 </div>
@@ -342,10 +344,12 @@ export default function EditGiftPage() {
                         Selected: {formData.image.name}
                       </div>
                       <div className="aspect-video relative rounded-lg overflow-hidden border border-gray-300">
-                        <img
+                        <Image
                           src={URL.createObjectURL(formData.image)}
                           alt="Preview of selected image"
-                          className="w-full h-full object-cover"
+                          fill
+                          className="object-cover"
+                          unoptimized
                         />
                       </div>
                     </div>
