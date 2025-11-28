@@ -109,11 +109,14 @@ export async function GET(request: NextRequest) {
     // Check if user is authenticated
     let session;
     try {
+      // In Next.js 15, getServerSession works without request, but we can pass headers for better compatibility
       session = await getServerSession(authOptions);
     } catch (sessionError) {
       console.error("Error getting session:", sessionError);
+      const sessionErrorMessage = sessionError instanceof Error ? sessionError.message : "Unknown session error";
+      console.error("Session error details:", sessionErrorMessage);
       return NextResponse.json(
-        { message: "Authentication error" },
+        { message: `Authentication error: ${sessionErrorMessage}` },
         { status: 500 }
       );
     }
