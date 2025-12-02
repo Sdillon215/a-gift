@@ -21,7 +21,6 @@ export default function SendAGiftPage() {
     if (status === "unauthenticated") {
       router.push("/");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, router]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -151,7 +150,7 @@ export default function SendAGiftPage() {
         try {
           const error = await response.json();
           errorMessage = error.message || errorMessage;
-        } catch (parseError) {
+        } catch {
           // If response is not JSON, use status-based messages
           if (response.status === 400) {
             errorMessage = "Invalid request. Please check your input and try again.";
@@ -166,15 +165,17 @@ export default function SendAGiftPage() {
         console.error("Error creating gift:", response.status, errorMessage);
         setErrors({ general: errorMessage });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error sending gift:", error);
       let errorMessage = "Failed to send gift. Please try again.";
       
       // Handle network errors
-      if (error.name === "TypeError" && error.message.includes("fetch")) {
-        errorMessage = "Network error. Please check your connection and try again.";
-      } else if (error.message) {
-        errorMessage = error.message;
+      if (error instanceof Error) {
+        if (error.name === "TypeError" && error.message.includes("fetch")) {
+          errorMessage = "Network error. Please check your connection and try again.";
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
       }
       
       setErrors({ general: errorMessage });
