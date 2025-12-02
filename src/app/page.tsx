@@ -19,15 +19,16 @@ export default function Home() {
 
   // Redirect to appropriate page if already logged in
   useEffect(() => {
-    if (status === "authenticated" && session) {
+    if (status === "authenticated" && session?.user?.email) {
       // Check if user is admin and route accordingly
-      if (session.user?.email === "sdillon215@gmail.com") {
+      if (session.user.email === "sdillon215@gmail.com") {
         router.push("/home");
       } else {
         router.push("/send-a-gift");
       }
     }
-  }, [status, session, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

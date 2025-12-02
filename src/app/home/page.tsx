@@ -22,52 +22,20 @@ try {
 }
 import GiftCard from "@/components/GiftCard";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
-
-interface Gift {
-  id: string;
-  title: string;
-  message: string;
-  imageUrl: string;
-  blurDataUrl?: string | null;
-  createdAt: string;
-  user: {
-    id: string;
-    name: string | null;
-    email: string;
-  };
-}
+import { useGifts } from "@/hooks/useGifts";
 
 export default function HomePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [gifts, setGifts] = useState<Gift[]>([]);
-  const [giftsLoading, setGiftsLoading] = useState(true);
+  const { gifts, isLoading: giftsLoading } = useGifts();
   const scrollProgress = useScrollProgress();
 
-  const fetchGifts = async () => {
-    try {
-      const response = await fetch("/api/gifts");
-      if (response.ok) {
-        const data = await response.json();
-        setGifts(data.gifts || []);
-      } else {
-        console.error("Failed to fetch gifts:", response.status, response.statusText);
-      }
-    } catch (error) {
-      console.error("Error fetching gifts:", error);
-    } finally {
-      setGiftsLoading(false);
-    }
-  };
-
   useEffect(() => {
-
     if (status === "unauthenticated") {
       router.push("/");
-    } else if (status === "authenticated") {
-      fetchGifts();
     }
-  }, [status, router, session]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
 
   if (status === "loading") {
     return (

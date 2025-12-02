@@ -72,11 +72,11 @@ export default function EditGiftPage() {
   }, [giftId, status]);
 
   useEffect(() => {
-    
     if (status === "unauthenticated") {
       router.push("/");
     }
-  }, [status, router, session]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, router]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;

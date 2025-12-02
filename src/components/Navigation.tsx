@@ -4,6 +4,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
+import { useGifts } from "@/hooks/useGifts";
 
 // Conditional import for framer-motion
 let motion: {
@@ -22,42 +23,16 @@ try {
   };
 }
 
-interface Gift {
-  id: string;
-  user: {
-    id: string;
-  };
-}
-
 export default function Navigation() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
-  const [gifts, setGifts] = useState<Gift[]>([]);
+  const { gifts } = useGifts(); // Use shared hook to prevent duplicate requests
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const scrollProgress = useScrollProgress();
-
-  // Fetch gifts to determine if user has a gift
-  useEffect(() => {
-    const fetchGifts = async () => {
-      if (status === "authenticated") {
-        try {
-          const response = await fetch("/api/gifts");
-          if (response.ok) {
-            const data = await response.json();
-            setGifts(data.gifts || []);
-          }
-        } catch (error) {
-          console.error("Error fetching gifts:", error);
-        }
-      }
-    };
-
-    fetchGifts();
-  }, [status]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
