@@ -19,7 +19,7 @@ interface GiftCardProps {
 export default function GiftCard({ gift }: GiftCardProps) {
   return (
     <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-colors">
-      <div className="aspect-video relative rounded-lg overflow-hidden mb-4">
+      <div className="aspect-square relative rounded-lg overflow-hidden mb-4">
         <Image
           src={gift.imageUrl}
           alt={gift.title}

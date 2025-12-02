@@ -65,50 +65,52 @@ export default function HomePage() {
         }}
       >
         <div className="max-w-7xl mx-auto">
-          {/* Hero Section */}
-          <motion.div
-            className="text-center mb-12 md:mb-16 pt-12 md:pt-20"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-          >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white mb-4 md:mb-6 px-4">
-              Happy Birthday Ashley!
-            </h2>
-            <p className="text-base sm:text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto px-4">
-              You are such a bright light in the universe and have such a positive influence on the world!
-            </p>
-            <p className="text-base sm:text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto pt-4 px-4">
-              The joy and love that you spread is immeasurable. The playful energy you embody is contagious. The impact that you have on those around you is nothing short of beautiful.
-            </p>
-            <p className="text-base sm:text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto pt-4 px-4">
-              For your birthday this year I wanted to create a meaningful gift to remind you of the incredible impact you have. However, I couldn&apos;t create this gift alone.
+          {/* Hero Section and Introduction - Full viewport on mobile */}
+          <div className="min-h-screen md:min-h-0 flex flex-col justify-center">
+            {/* Hero Section */}
+            <motion.div
+              className="text-center mb-36 md:mb-16 pt-12 md:pt-20"
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+            >
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white mb-4 md:mb-6 px-4">
+                Happy Birthday Ashley!
+              </h2>
+              <p className="text-base sm:text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto px-4">
+                You are such a bright light in the universe and have such a positive influence on the world!
+              </p>
+              <p className="text-base sm:text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto pt-4 px-4">
+                The joy and love that you spread is immeasurable, the playful energy you embody is contagious, and the effect that you have on those around you is nothing short of beautiful.
+              </p>
+              <p className="text-base sm:text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto pt-4 px-4">
+                For your birthday this year I wanted to create a meaningful gift to remind you of the incredible impact you have. However, I couldn&apos;t create this gift alone.
+              </p>
+            </motion.div>
 
-            </p>
-          </motion.div>
-
-          {/* Gifts Introduction */}
-          <motion.div
-            className="text-center mb-12 md:mb-16 px-4"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <h3 className="text-xl sm:text-2xl md:text-2xl font-bold text-emerald-100 mb-4 md:mb-6">Scroll through the stars to see how far your light shines 💚</h3>
-            {giftsLoading && (
-              <div className="flex items-center justify-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-                <span className="ml-3 text-white">Loading gifts...</span>
-              </div>
-            )}
-            {!giftsLoading && gifts.length === 0 && (
-              <div className="text-center py-8">
-                <div className="text-6xl mb-4">🎁</div>
-                <p className="text-white/70 text-lg">No gifts shared yet</p>
-                <p className="text-white/50 text-sm mt-2">Be the first to share a gift with the community!</p>
-              </div>
-            )}
-          </motion.div>
+            {/* Gifts Introduction */}
+            <motion.div
+              className="text-center mb-12 md:mb-16 px-4"
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <h3 className="text-xl sm:text-2xl md:text-2xl font-bold text-emerald-100 mb-4 md:mb-6">Scroll through the stars to see how far your light shines 💚</h3>
+              {giftsLoading && (
+                <div className="flex items-center justify-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                  <span className="ml-3 text-white">Loading gifts...</span>
+                </div>
+              )}
+              {!giftsLoading && gifts.length === 0 && (
+                <div className="text-center py-8">
+                  <div className="text-6xl mb-4">🎁</div>
+                  <p className="text-white/70 text-lg">No gifts shared yet</p>
+                  <p className="text-white/50 text-sm mt-2">Be the first to share a gift with the community!</p>
+                </div>
+              )}
+            </motion.div>
+          </div>
 
           {/* Individual Gift Cards Spaced Throughout */}
           {!giftsLoading && gifts.length > 0 && gifts.map((gift, index) => (
