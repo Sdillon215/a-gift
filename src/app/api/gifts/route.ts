@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
       blob = await put(image.name, image, {
         access: "public",
       });
-    } catch (blobError: any) {
+    } catch (blobError: unknown) {
       console.error("Error uploading to blob storage:", blobError);
       return NextResponse.json(
         { message: "Failed to upload image. Please try again or use a smaller file." },
@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
           userId: session.user.id,
         },
       });
-    } catch (dbError: any) {
+    } catch (dbError: unknown) {
       console.error("Error saving gift to database:", dbError);
       // Try to clean up the uploaded blob if database save fails
       try {
@@ -129,18 +129,20 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error creating gift:", error);
     
     // Provide more specific error messages based on error type
     let errorMessage = "An unexpected error occurred. Please try again.";
     
-    if (error.message) {
-      errorMessage = error.message;
-    } else if (error.name === "PrismaClientKnownRequestError") {
-      errorMessage = "Database error. Please try again.";
-    } else if (error.name === "NetworkError" || error.code === "ECONNREFUSED") {
-      errorMessage = "Network error. Please check your connection and try again.";
+    if (error instanceof Error) {
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (error.name === "PrismaClientKnownRequestError") {
+        errorMessage = "Database error. Please try again.";
+      } else if (error.name === "NetworkError" || (error as { code?: string }).code === "ECONNREFUSED") {
+        errorMessage = "Network error. Please check your connection and try again.";
+      }
     }
     
     return NextResponse.json(
@@ -150,7 +152,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // Check if Prisma is properly initialized
     if (!prisma || !('gift' in prisma)) {
