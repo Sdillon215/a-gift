@@ -61,6 +61,19 @@ export default function SendAGiftPage() {
 
     if (!formData.image) {
       newErrors.image = "Please select an image";
+    } else {
+      // Validate image file type
+      const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"];
+      if (!allowedTypes.includes(formData.image.type.toLowerCase())) {
+        newErrors.image = "Unsupported file type. Please use PNG, JPG, GIF, or WebP.";
+      }
+      
+      // Validate image file size (10MB limit)
+      const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
+      if (formData.image.size > MAX_FILE_SIZE) {
+        const fileSizeMB = (formData.image.size / 1024 / 1024).toFixed(2);
+        newErrors.image = `Image is too large (${fileSizeMB}MB). Maximum file size is 10MB.`;
+      }
     }
 
     if (!formData.title.trim()) {
@@ -133,13 +146,38 @@ export default function SendAGiftPage() {
           router.push("/home");
         }, 2000);
       } else {
-        const error = await response.json();
-        console.error("Error creating gift:", error);
-        setErrors({ general: error.message || "Failed to send gift. Please try again." });
+        // Try to parse error response
+        let errorMessage = "Failed to send gift. Please try again.";
+        try {
+          const error = await response.json();
+          errorMessage = error.message || errorMessage;
+        } catch (parseError) {
+          // If response is not JSON, use status-based messages
+          if (response.status === 400) {
+            errorMessage = "Invalid request. Please check your input and try again.";
+          } else if (response.status === 401) {
+            errorMessage = "You are not authorized. Please log in and try again.";
+          } else if (response.status === 413) {
+            errorMessage = "File is too large. Please use an image smaller than 10MB.";
+          } else if (response.status >= 500) {
+            errorMessage = "Server error. Please try again later.";
+          }
+        }
+        console.error("Error creating gift:", response.status, errorMessage);
+        setErrors({ general: errorMessage });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error sending gift:", error);
-      setErrors({ general: "Failed to send gift. Please try again." });
+      let errorMessage = "Failed to send gift. Please try again.";
+      
+      // Handle network errors
+      if (error.name === "TypeError" && error.message.includes("fetch")) {
+        errorMessage = "Network error. Please check your connection and try again.";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      setErrors({ general: errorMessage });
     } finally {
       setIsLoading(false);
     }
@@ -316,7 +354,7 @@ export default function SendAGiftPage() {
                         />
                       </label>
                     </div>
-                    <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                    <p className="text-xs text-gray-500">PNG, JPG, GIF, or WebP up to 10MB</p>
                   </div>
                 </div>
                 {formData.image && (
