@@ -49,7 +49,7 @@ export function useGifts() {
           const data = await response.json();
           giftsCache = data.gifts || [];
           cacheTimestamp = Date.now();
-          setGifts(giftsCache);
+          setGifts(giftsCache || []);
         } else {
           console.error("Failed to fetch gifts:", response.status, response.statusText);
         }
