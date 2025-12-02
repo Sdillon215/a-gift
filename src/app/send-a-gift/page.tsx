@@ -67,11 +67,11 @@ export default function SendAGiftPage() {
         newErrors.image = "Unsupported file type. Please use PNG, JPG, GIF, or WebP.";
       }
       
-      // Validate image file size (10MB limit)
-      const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
+      // Validate image file size (4.5MB limit - Vercel serverless function limit)
+      const MAX_FILE_SIZE = 4.5 * 1024 * 1024; // 4.5MB in bytes (Vercel's limit)
       if (formData.image.size > MAX_FILE_SIZE) {
         const fileSizeMB = (formData.image.size / 1024 / 1024).toFixed(2);
-        newErrors.image = `Image is too large (${fileSizeMB}MB). Maximum file size is 10MB.`;
+        newErrors.image = `Image is too large (${fileSizeMB}MB). Maximum file size is 4.5MB.`;
       }
     }
 
@@ -157,7 +157,7 @@ export default function SendAGiftPage() {
           } else if (response.status === 401) {
             errorMessage = "You are not authorized. Please log in and try again.";
           } else if (response.status === 413) {
-            errorMessage = "File is too large. Please use an image smaller than 10MB.";
+            errorMessage = "File is too large. Please use an image smaller than 4.5MB.";
           } else if (response.status >= 500) {
             errorMessage = "Server error. Please try again later.";
           }
@@ -355,7 +355,7 @@ export default function SendAGiftPage() {
                         />
                       </label>
                     </div>
-                    <p className="text-xs text-gray-500">PNG, JPG, GIF, or WebP up to 10MB</p>
+                    <p className="text-xs text-gray-500">PNG, JPG, GIF, or WebP up to 4.5MB</p>
                   </div>
                 </div>
                 {formData.image && (

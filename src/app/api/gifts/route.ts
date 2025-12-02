@@ -47,11 +47,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate image file size (10MB limit)
-    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
+    // Validate image file size (4.5MB limit - Vercel serverless function limit)
+    const MAX_FILE_SIZE = 4.5 * 1024 * 1024; // 4.5MB in bytes (Vercel's limit)
     if (image.size > MAX_FILE_SIZE) {
       return NextResponse.json(
-        { message: `Image is too large. Maximum file size is 10MB. Your file is ${(image.size / 1024 / 1024).toFixed(2)}MB.` },
+        { message: `Image is too large. Maximum file size is 4.5MB. Your file is ${(image.size / 1024 / 1024).toFixed(2)}MB.` },
         { status: 400 }
       );
     }

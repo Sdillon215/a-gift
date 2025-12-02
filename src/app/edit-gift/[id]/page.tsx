@@ -333,7 +333,7 @@ export default function EditGiftPage() {
                           />
                         </label>
                       </div>
-                      <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                      <p className="text-xs text-gray-500">PNG, JPG, GIF, or WebP up to 4.5MB</p>
                     </div>
                   </div>
                   {formData.image && (
