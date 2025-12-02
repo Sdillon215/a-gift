@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
 import { useGifts } from "@/hooks/useGifts";
+import { invalidateGiftsCache } from "@/hooks/useGifts";
 
 // Conditional import for framer-motion
 let motion: {
@@ -27,12 +28,34 @@ export default function Navigation() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
-  const { gifts } = useGifts(); // Use shared hook to prevent duplicate requests
+  const { gifts, invalidateCache } = useGifts(); // Use shared hook to prevent duplicate requests
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const scrollProgress = useScrollProgress();
+
+  // Check if gifts need to be refreshed (e.g., after creating a gift)
+  useEffect(() => {
+    const checkAndRefresh = () => {
+      const shouldRefresh = sessionStorage.getItem("giftCreated");
+      if (shouldRefresh === "true") {
+        invalidateCache();
+        invalidateGiftsCache();
+        sessionStorage.removeItem("giftCreated");
+        // Force a small delay to ensure the refresh happens
+        setTimeout(() => {
+          invalidateGiftsCache(); // Invalidate again to ensure refetch
+        }, 100);
+      }
+    };
+    
+    checkAndRefresh();
+    
+    // Also check periodically in case the flag was set after mount
+    const interval = setInterval(checkAndRefresh, 500);
+    return () => clearInterval(interval);
+  }, [invalidateCache, pathname]); // Also check when pathname changes (e.g., navigating to home)
 
   // Close dropdown when clicking outside
   useEffect(() => {

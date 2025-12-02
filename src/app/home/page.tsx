@@ -23,12 +23,23 @@ try {
 import GiftCard from "@/components/GiftCard";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
 import { useGifts } from "@/hooks/useGifts";
+import { invalidateGiftsCache } from "@/hooks/useGifts";
 
 export default function HomePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { gifts, isLoading: giftsLoading } = useGifts();
   const scrollProgress = useScrollProgress();
+
+  // Check if we need to refresh gifts (e.g., after creating a gift)
+  useEffect(() => {
+    // Check if there's a flag indicating a gift was just created
+    const shouldRefresh = sessionStorage.getItem("giftCreated");
+    if (shouldRefresh === "true") {
+      invalidateGiftsCache();
+      sessionStorage.removeItem("giftCreated");
+    }
+  }, []);
 
   useEffect(() => {
     if (status === "unauthenticated") {

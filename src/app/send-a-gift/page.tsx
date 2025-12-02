@@ -115,8 +115,21 @@ export default function SendAGiftPage() {
           message: "",
         });
 
+        // Set flag to refresh gifts when redirected to home page
+        sessionStorage.setItem("giftCreated", "true");
+
+        // Invalidate gifts cache so the home page shows the new gift
+        import("@/hooks/useGifts").then(({ invalidateGiftsCache }) => {
+          invalidateGiftsCache();
+        });
+
         // Redirect to home page after showing success message
+        // Give enough time for the database to be updated
         setTimeout(() => {
+          // Invalidate cache again right before redirect to ensure fresh data
+          import("@/hooks/useGifts").then(({ invalidateGiftsCache }) => {
+            invalidateGiftsCache();
+          });
           router.push("/home");
         }, 2000);
       } else {
