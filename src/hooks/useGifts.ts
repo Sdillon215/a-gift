@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 interface Gift {
   id: string;
   title: string;
-  message: string;
+  message: string | null;
   imageUrl: string;
   blurDataUrl?: string | null;
   createdAt: string;

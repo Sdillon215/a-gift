@@ -47,8 +47,9 @@ export async function GET(
       );
     }
 
-    // Check if the user owns this gift
-    if (gift.userId !== session.user.id) {
+    // Check if the user owns this gift or is an admin
+    const isAdmin = (session.user as { isAdmin?: boolean })?.isAdmin || false;
+    if (gift.userId !== session.user.id && !isAdmin) {
       return NextResponse.json(
         { message: "Forbidden - You can only edit your own gifts" },
         { status: 403 }

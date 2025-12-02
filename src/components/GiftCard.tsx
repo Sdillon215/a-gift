@@ -4,7 +4,7 @@ interface GiftCardProps {
   gift: {
     id: string;
     title: string;
-    message: string;
+    message: string | null;
     imageUrl: string;
     blurDataUrl?: string | null;
     createdAt: string;
@@ -33,7 +33,9 @@ export default function GiftCard({ gift }: GiftCardProps) {
       
       <div className="space-y-3">
         <h3 className="text-xl font-semibold text-white">{gift.title}</h3>
-        <p className="text-emerald-100 text-sm leading-relaxed">{gift.message}</p>
+        {gift.message && (
+          <p className="text-emerald-100 text-sm leading-relaxed">{gift.message}</p>
+        )}
         
         <div className="flex items-center justify-between pt-2 border-t border-white/10">
           <div className="flex items-center space-x-2">

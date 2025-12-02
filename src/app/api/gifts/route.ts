@@ -144,7 +144,43 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({ gifts });
+    // Check if user is admin
+    const isAdmin = (session.user as { isAdmin?: boolean })?.isAdmin || false;
+    const currentUserId = session.user.id;
+
+    // Conditionally include messages based on user role and ownership
+    const giftsWithFilteredMessages = gifts.map(gift => {
+      const giftData: {
+        id: string;
+        title: string;
+        message: string | null;
+        imageUrl: string;
+        blurDataUrl: string | null;
+        createdAt: Date;
+        user: {
+          id: string;
+          name: string | null;
+          email: string;
+        };
+      } = {
+        id: gift.id,
+        title: gift.title,
+        message: null, // Default to null
+        imageUrl: gift.imageUrl,
+        blurDataUrl: gift.blurDataUrl,
+        createdAt: gift.createdAt,
+        user: gift.user,
+      };
+
+      // Show message if: user is admin OR gift belongs to current user
+      if (isAdmin || gift.userId === currentUserId) {
+        giftData.message = gift.message;
+      }
+
+      return giftData;
+    });
+
+    return NextResponse.json({ gifts: giftsWithFilteredMessages });
   } catch (error) {
     console.error("Error fetching gifts:", error);
     return NextResponse.json(
