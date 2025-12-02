@@ -110,8 +110,7 @@ export default function Navigation() {
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         {/* Logo */}
         <div className="text-white cursor-pointer" onClick={() => router.push('/home')}>
-          <h1 className="text-xl md:text-2xl font-bold">A-Gift</h1>
-          <p className="text-sm text-emerald-100 hidden sm:block">Welcome back!</p>
+          <div className="text-3xl md:text-4xl">🎁</div>
         </div>
 
         {/* Desktop Navigation */}
