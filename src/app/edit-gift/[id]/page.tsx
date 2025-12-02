@@ -318,10 +318,10 @@ export default function EditGiftPage() {
                           strokeLinejoin="round"
                         />
                       </svg>
-                      <div className="flex text-sm text-gray-600">
+                      <div className="flex flex-col items-center gap-3">
                         <label
                           htmlFor="image"
-                          className="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500"
+                          className="relative cursor-pointer bg-emerald-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-emerald-700 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500 transition-colors shadow-md hover:shadow-lg"
                         >
                           <span>Upload a new file</span>
                           <input
@@ -333,7 +333,6 @@ export default function EditGiftPage() {
                             className="sr-only"
                           />
                         </label>
-                        <p className="pl-1">or drag and drop</p>
                       </div>
                       <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
                     </div>

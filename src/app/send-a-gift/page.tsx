@@ -115,10 +115,10 @@ export default function SendAGiftPage() {
           message: "",
         });
 
-        // Auto-hide alert after 3 seconds
+        // Redirect to home page after showing success message
         setTimeout(() => {
-          setShowSuccessAlert(false);
-        }, 3000);
+          router.push("/home");
+        }, 2000);
       } else {
         const error = await response.json();
         console.error("Error creating gift:", error);
@@ -287,10 +287,10 @@ export default function SendAGiftPage() {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    <div className="flex text-sm text-gray-600">
+                    <div className="flex flex-col items-center gap-3">
                       <label
                         htmlFor="image"
-                        className="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500"
+                        className="relative cursor-pointer bg-emerald-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-emerald-700 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500 transition-colors shadow-md hover:shadow-lg"
                       >
                         <span>Upload a file</span>
                         <input
@@ -302,7 +302,6 @@ export default function SendAGiftPage() {
                           className="sr-only"
                         />
                       </label>
-                      <p className="pl-1">or drag and drop</p>
                     </div>
                     <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
                   </div>
