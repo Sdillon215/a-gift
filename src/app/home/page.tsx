@@ -139,35 +139,6 @@ export default function HomePage() {
             </motion.div>
           ))}
 
-          {/* Continue Your Journey Section */}
-          <motion.div
-            className="mt-32 text-center"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 1 }}
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            <h3 className="text-3xl font-bold text-white mb-6">Continue Your Journey</h3>
-            <p className="text-emerald-100 text-lg mb-8">
-              The deeper you scroll, the further into the starfield you travel
-            </p>
-            <div className="h-96 flex items-center justify-center">
-              <motion.div
-                className="text-8xl"
-                animate={{
-                  rotate: 360,
-                  scale: [1, 1.2, 1]
-                }}
-                transition={{
-                  duration: 20,
-                  repeat: Infinity,
-                  ease: "linear"
-                }}
-              >
-                🌌
-              </motion.div>
-            </div>
-          </motion.div>
 
           {/* Deeper Into Space Section */}
           <div className="h-screen flex items-center justify-center mt-32">
@@ -178,9 +149,12 @@ export default function HomePage() {
               transition={{ duration: 1 }}
               viewport={{ once: true, margin: "-100px" }}
             >
-              <h3 className="text-4xl font-bold text-white mb-6">Deeper Into Space</h3>
+              <h3 className="text-4xl font-bold text-white mb-6">You are so loved 💚</h3>
+              <p className="text-emerald-100 text-xl mb-4">
+                And I hope this has been a beautiful reminder of that!
+              </p>
               <p className="text-emerald-100 text-xl">
-                You&apos;ve traveled far into the cosmic gift universe
+                Happy birthday babe. Have the best day ever!
               </p>
             </motion.div>
           </div>
