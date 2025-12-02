@@ -19,16 +19,44 @@ export default function Home() {
 
   // Redirect to appropriate page if already logged in
   useEffect(() => {
-    if (status === "authenticated" && session?.user?.email) {
-      // Check if user is admin and route accordingly
-      if (session.user.email === "sdillon215@gmail.com") {
-        router.push("/home");
-      } else {
-        router.push("/send-a-gift");
+    const checkUserGiftsAndRedirect = async () => {
+      if (status === "authenticated" && session?.user?.id) {
+        // Check if user is admin and route accordingly
+        if (session.user.email === "sdillon215@gmail.com") {
+          router.push("/home");
+          return;
+        }
+        
+        // Check if user has already sent a gift
+        try {
+          const response = await fetch("/api/gifts", {
+            cache: "no-store",
+          });
+          if (response.ok) {
+            const data = await response.json();
+            const userGifts = data.gifts?.filter((gift: { user: { id: string } }) => 
+              gift.user.id === session.user.id
+            ) || [];
+            
+            if (userGifts.length > 0) {
+              router.push("/home");
+            } else {
+              router.push("/send-a-gift");
+            }
+          } else {
+            // If API fails, default to send-a-gift
+            router.push("/send-a-gift");
+          }
+        } catch {
+          // If error, default to send-a-gift
+          router.push("/send-a-gift");
+        }
       }
-    }
+    };
+    
+    checkUserGiftsAndRedirect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status]);
+  }, [status, session?.user?.id]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -102,7 +130,42 @@ export default function Home() {
           if (formData.email === "sdillon215@gmail.com") {
             router.push("/home");
           } else {
-            router.push("/send-a-gift");
+            // Wait for session to update, then check if user has gifts
+            setTimeout(async () => {
+              try {
+                const sessionRes = await fetch("/api/auth/session");
+                if (sessionRes.ok) {
+                  const sessionData = await sessionRes.json();
+                  const userId = sessionData?.user?.id;
+                  
+                  if (userId) {
+                    const giftsResponse = await fetch("/api/gifts", {
+                      cache: "no-store",
+                    });
+                    if (giftsResponse.ok) {
+                      const giftsData = await giftsResponse.json();
+                      const userGifts = giftsData.gifts?.filter((gift: { user: { id: string } }) => 
+                        gift.user.id === userId
+                      ) || [];
+                      
+                      if (userGifts.length > 0) {
+                        router.push("/home");
+                      } else {
+                        router.push("/send-a-gift");
+                      }
+                    } else {
+                      router.push("/send-a-gift");
+                    }
+                  } else {
+                    router.push("/send-a-gift");
+                  }
+                } else {
+                  router.push("/send-a-gift");
+                }
+              } catch {
+                router.push("/send-a-gift");
+              }
+            }, 200);
           }
         }
       } else {
