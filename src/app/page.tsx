@@ -29,13 +29,16 @@ export default function Home() {
         
         // Check if user has already sent a gift
         try {
+          if (!session?.user?.id) return;
+          
           const response = await fetch("/api/gifts", {
             cache: "no-store",
           });
           if (response.ok) {
             const data = await response.json();
+            const userId = session.user.id;
             const userGifts = data.gifts?.filter((gift: { user: { id: string } }) => 
-              gift.user.id === session.user.id
+              gift.user.id === userId
             ) || [];
             
             if (userGifts.length > 0) {
