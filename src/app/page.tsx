@@ -22,7 +22,8 @@ export default function Home() {
     const checkUserGiftsAndRedirect = async () => {
       if (status === "authenticated" && session?.user?.id) {
         // Check if user is admin and route accordingly
-        if (session.user.email === "sdillon215@gmail.com") {
+        const adminEmails = ["sdillon215@gmail.com", "ashley.n22.johnson@gmail.com"];
+        if (session.user.email && adminEmails.includes(session.user.email)) {
           router.push("/home");
           return;
         }
@@ -130,7 +131,8 @@ export default function Home() {
           setErrors({ general: "Invalid credentials" });
         } else if (result?.ok) {
           // Check if user is admin and route accordingly
-          if (formData.email === "sdillon215@gmail.com") {
+          const adminEmails = ["sdillon215@gmail.com", "ashley.n22.johnson@gmail.com"];
+          if (adminEmails.includes(formData.email)) {
             router.push("/home");
           } else {
             // Wait for session to update, then check if user has gifts

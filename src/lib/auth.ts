@@ -35,11 +35,16 @@ export const authOptions: NextAuthOptions = {
 
         if (!isPasswordValid) return null
 
+        const adminEmails = [
+          "sdillon215@gmail.com",
+          "ashley.n22.johnson@gmail.com"
+        ];
+        
         return {
           id: user.id,
           email: user.email,
           name: user.name,
-          isAdmin: user.email === "sdillon215@gmail.com"
+          isAdmin: adminEmails.includes(user.email)
         }
       }
     })
