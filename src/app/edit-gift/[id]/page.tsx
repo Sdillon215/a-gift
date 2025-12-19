@@ -125,8 +125,8 @@ export default function EditGiftPage() {
 
     if (!formData.message.trim()) {
       newErrors.message = "Message is required";
-    } else if (formData.message.length > 500) {
-      newErrors.message = "Message must be 500 characters or less";
+    } else if (formData.message.length > 2000) {
+      newErrors.message = "Message must be 2000 characters or less";
     }
 
     setErrors(newErrors);
@@ -405,11 +405,11 @@ export default function EditGiftPage() {
                   value={formData.message}
                   onChange={handleInputChange}
                   rows={4}
-                  maxLength={500}
+                  maxLength={2000}
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent focus:outline-none transition-colors text-gray-900 resize-none ${
                     errors.message ? "border-red-500" : "border-gray-300"
                   }`}
-                  placeholder="Write your message (up to 500 characters)"
+                  placeholder="Write your message (up to 2000 characters)"
                 />
                 <div className="mt-1 flex justify-between text-sm">
                   <div>
@@ -417,8 +417,8 @@ export default function EditGiftPage() {
                       <p className="text-red-500">{errors.message}</p>
                     )}
                   </div>
-                  <div className={`${formData.message.length > 450 ? 'text-red-500' : 'text-gray-500'}`}>
-                    {formData.message.length}/500
+                  <div className={`${formData.message.length > 1800 ? 'text-red-500' : 'text-gray-500'}`}>
+                    {formData.message.length}/2000
                   </div>
                 </div>
               </div>
